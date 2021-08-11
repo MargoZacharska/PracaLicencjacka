@@ -5,12 +5,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.cookmaster.services.DataService;
+import com.example.cookmaster.services.RecipeListAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,10 +30,11 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_search:
-                        Toast.makeText(MainActivity.this, "Search", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Main", Toast.LENGTH_SHORT).show();
                         break;
-                    case R.id.action_recent:
-                        Toast.makeText(MainActivity.this, "Recents", Toast.LENGTH_SHORT).show();
+                    case R.id.action_recipes:
+                        Intent intent = new Intent(MainActivity.this, RecipeListActivity.class);
+                        startActivity(intent);
                         break;
                     case R.id.action_favorites:
                         Toast.makeText(MainActivity.this, "Favorites", Toast.LENGTH_SHORT).show();
