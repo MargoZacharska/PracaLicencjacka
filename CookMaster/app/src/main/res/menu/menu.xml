@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_search"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/Strona_główna"
+        android:enabled="true"
+
+        app:showAsAction="always|withText" />
+    <item
+        android:id="@+id/action_recent"
+        android:icon="@drawable/ic_baseline_explore_24"
+        android:title="@string/Szukaj"
+        android:enabled="true"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/action_favorites"
+        android:icon="@drawable/ic_baseline_bookmark_24"
+        android:title="@string/Zakładki"
+        android:enabled="true"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/my_week"
+        android:icon="@drawable/ic_baseline_calendar_today_24"
+        android:title="@string/Mój_tydzień"
+        android:enabled="true"
+        app:showAsAction="ifRoom|withText"/>
+    <item
+        android:id="@+id/action_shopping"
+        android:icon="@drawable/ic_baseline_shopping_cart_24"
+        android:enabled="true"
+        android:title="@string/Listazakupów"
+        app:showAsAction="always"/>
+</menu>

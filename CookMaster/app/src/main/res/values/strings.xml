@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">CookMaster</string>
+    <string name="app_name">Cookidoo</string>
+    <string name="Strona_główna">Strona główna</string>
+    <string name="Szukaj">Szukaj</string>
+    <string name="Zakładki">Zakładki</string>
+    <string name="Mój_tydzień">Mój tydzień</string>
+    <string name="Listazakupów">Lista zakupów</string>
+    <string name="AddRecipe">Dodaj przepis</string>
 </resources>
