@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cookmaster.R;
@@ -42,9 +43,10 @@ public class RecipeListAdapter extends BaseAdapter {
         }
         Recipe recipe = this.recipes.get(position);
 
-        ((TextView) convertView.findViewById(R.id.recipe_description)).setText(recipe.description);
+        ((ImageView) convertView.findViewById(R.id.recipe_image)).setImageDrawable(recipe.image);
+        ((TextView) convertView.findViewById(R.id.recipe_title)).setText(recipe.title);
         ((TextView) convertView.findViewById(R.id.recipe_category)).setText(recipe.category);
-        ((TextView) convertView.findViewById(R.id.recipe_preparation_time)).setText(recipe.preparationTime);
+        ((TextView) convertView.findViewById(R.id.recipe_preparation_time)).setText("Czas przygotowania: " + recipe.preparationTime);
 
         return convertView;
     }

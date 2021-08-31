@@ -17,6 +17,6 @@ public class RecipeListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_list);
         
-        ((ListView)findViewById(R.id.recipe_list_view)).setAdapter(new RecipeListAdapter(this, dataService.GetRecipes()));
+        ((ListView)findViewById(R.id.recipe_list_view)).setAdapter(new RecipeListAdapter(this, dataService.GetRecipes(this)));
     }
 }
