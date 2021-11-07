@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".RecipeListActivity"
@@ -11,7 +12,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding">
+        android:padding="@dimen/inner_frame_layout_padding"
+        app:menu="@menu/menu">
 
         <EditText
             android:id="@+id/recipe_search"
@@ -21,8 +23,8 @@
 
         <ListView
             android:id="@+id/recipe_list_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_below="@+id/recipe_search"/>
 
     </RelativeLayout>

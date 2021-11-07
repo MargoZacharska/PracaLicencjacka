@@ -9,19 +9,31 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
 import com.example.cookmaster.services.RecipeListAdapter;
 
+import java.util.List;
+
 public class RecipeListActivity extends Activity {
 
-    private DataService dataService = new DataService();
+    private DataService dataService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dataService = new DataService(this);
         setContentView(R.layout.activity_recipe_list);
 
-        RecipeListAdapter adapter = new RecipeListAdapter(this, dataService.GetRecipes(this));
+
+        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));
+        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));
+        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));v
+        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));
+
+        List<Recipe> recipes = dataService.GetRecipes();
+
+        RecipeListAdapter adapter = new RecipeListAdapter(this, recipes);
         ListView recipeList = ((ListView)findViewById(R.id.recipe_list_view));
         recipeList.setAdapter(adapter);
         recipeList.setTextFilterEnabled(true);

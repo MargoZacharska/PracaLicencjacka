@@ -1,38 +1,67 @@
 package com.example.cookmaster.services;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 
-import androidx.appcompat.content.res.AppCompatResources;
-
-import com.example.cookmaster.R;
+import com.example.cookmaster.db.LocalDbConnector;
 import com.example.cookmaster.model.Recipe;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class DataService {
-    public List<Recipe> GetRecipes(Context ctx){
-        List<Recipe> recipes =  new LinkedList<>();
 
-        Drawable img = AppCompatResources.getDrawable(ctx, R.drawable.zupa_dyniowa_mini);
-        recipes.add(new Recipe(5, "stare skarpety", "zupa", "3 dni", img));
+    private SQLiteDatabase Db;
 
-        img = AppCompatResources.getDrawable(ctx, R.drawable.beza_mini);
-        recipes.add(new Recipe(1, "Some basic recipe", "stejk", "w chuj dlugo", img));
+    public DataService(Context context){
+        LocalDbConnector test = new LocalDbConnector(context);
+        Db = test.getWritableDatabase();
+    }
 
-        img = AppCompatResources.getDrawable(ctx, R.drawable.szarlotka_mini);
-        recipes.add(new Recipe(2, "Kapucha", "zupa", "70 minut", img));
+    public void AddRecipe(Recipe recipe) {
+        Bitmap bitmap = ((BitmapDrawable)recipe.image).getBitmap();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] bitMapData = stream.toByteArray();
 
-        img = AppCompatResources.getDrawable(ctx, R.drawable.frittata_mini);
-        recipes.add(new Recipe(3, "smierdacy ser", "zakaska", "w chuj dlugo", img));
+        Db.execSQL(
+                "INSERT INTO recipe (NAME, DESCRIPTION, CATEGORY, PHOTO) VALUES (?,?,?,?)",
+                new Object[]{
+                        recipe.title,
+                        "opid",
+                        recipe.category,
+                        bitMapData
+                });
+    }
 
-        img = AppCompatResources.getDrawable(ctx, R.drawable.salatka_mini);
-        recipes.add(new Recipe(4, "serek śmierdzielek", "zakaska", "w chuj dlugo", img));
+    public List<Recipe> GetRecipes() {
+        List<Recipe> result = new ArrayList<Recipe>();
 
-        img = AppCompatResources.getDrawable(ctx, R.drawable.tort_piernikowy_mini);
-        recipes.add(new Recipe(5, "sałatka owocowa", "sałatka", "20 minut", img));
+        Cursor cursor = Db.rawQuery("SELECT * FROM recipe", new String[]{});
+        if (cursor.moveToFirst()) {
+            do {
+                ByteArrayInputStream stream = new ByteArrayInputStream(cursor.getBlob(5));
+                Bitmap bits = BitmapFactory.decodeStream(stream);
+                bits = Bitmap.createScaledBitmap(bits, 1000, 1000, false);
+                Drawable d =  new BitmapDrawable(bits);
 
-        return recipes;
+                result.add(new Recipe(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getString(3),
+                        d));
+            } while (cursor.moveToNext());
+        }
+        return result;
     }
 }
