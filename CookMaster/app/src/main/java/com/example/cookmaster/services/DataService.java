@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.ScaleDrawable;
+import android.media.Rating;
 
 import com.example.cookmaster.db.LocalDbConnector;
 import com.example.cookmaster.model.Recipe;
@@ -36,8 +37,8 @@ public class DataService {
         Db.execSQL(
                 "INSERT INTO recipe (NAME, DESCRIPTION, CATEGORY, PHOTO) VALUES (?,?,?,?)",
                 new Object[]{
-                        recipe.title,
-                        "opid",
+                        recipe.name,
+                        recipe.description,
                         recipe.category,
                         bitMapData
                 });
@@ -49,19 +50,32 @@ public class DataService {
         Cursor cursor = Db.rawQuery("SELECT * FROM recipe", new String[]{});
         if (cursor.moveToFirst()) {
             do {
-                ByteArrayInputStream stream = new ByteArrayInputStream(cursor.getBlob(5));
-                Bitmap bits = BitmapFactory.decodeStream(stream);
-                bits = Bitmap.createScaledBitmap(bits, 1000, 1000, false);
-                Drawable d =  new BitmapDrawable(bits);
-
-                result.add(new Recipe(
-                        cursor.getInt(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        d));
+                result.add(ReadRecipe(cursor));
             } while (cursor.moveToNext());
         }
         return result;
+    }
+
+    public Recipe GetRecipe(int id) {
+        Cursor cursor = Db.rawQuery("SELECT * FROM recipe WHERE recipe_id = ?", new String[]{id + ""});
+        if (cursor.moveToFirst()) {
+            return ReadRecipe(cursor);
+        }
+        return null;
+    }
+
+    private Recipe ReadRecipe(Cursor cursor) {
+        ByteArrayInputStream stream = new ByteArrayInputStream(cursor.getBlob(5));
+        Bitmap bits = BitmapFactory.decodeStream(stream);
+        bits = Bitmap.createScaledBitmap(bits, 1000, 1000, false);
+        Drawable d = new BitmapDrawable(bits);
+
+        return new Recipe(
+                cursor.getInt(0),
+                cursor.getString(1),
+                cursor.getString(2),
+                cursor.getString(3),
+                cursor.getString(4),
+                d);
     }
 }

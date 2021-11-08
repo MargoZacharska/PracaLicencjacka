@@ -26,10 +26,14 @@ public class RecipeListActivity extends Activity {
         setContentView(R.layout.activity_recipe_list);
 
 
-        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));
-        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));
-        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));v
-        dataService.AddRecipe(new Recipe(1, "Jaki opis", "ciasto", "", getResources().getDrawable(R.drawable.beza_mini)));
+
+
+        /*dataService.AddRecipe(new Recipe(1, "Taka tam beza", "ciasto", "", "", getResources().getDrawable(R.drawable.beza_mini)));
+        dataService.AddRecipe(new Recipe(1, "Dobre na sniadanie", "obiad", "", "", getResources().getDrawable(R.drawable.frittata_mini)));
+        dataService.AddRecipe(new Recipe(1, "Zielenina", "salatka", "", "", getResources().getDrawable(R.drawable.salatka_mini)));
+        dataService.AddRecipe(new Recipe(1, "Cos z jablek", "ciasto", "", "", getResources().getDrawable(R.drawable.szarlotka_mini)));
+        dataService.AddRecipe(new Recipe(1, "Jesienna zupa", "zupa", "", "", getResources().getDrawable(R.drawable.zupa_dyniowa_mini)));
+        dataService.AddRecipe(new Recipe(1, "torcik", "ciasto", "", "", getResources().getDrawable(R.drawable.tort_piernikowy_mini)));*/
 
         List<Recipe> recipes = dataService.GetRecipes();
 

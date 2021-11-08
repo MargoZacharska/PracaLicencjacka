@@ -13,10 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CookMaster">
+        <activity
+            android:name=".RecipeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_recipe"
+            android:theme="@style/Theme.CookMaster.NoActionBar" />
+
         <uses-library
             android:name="com.google.android.wearable"
             android:required="false" />
-
         <!--
                Set to true if your app is Standalone, that is, it does not require the handheld
                app to run.
@@ -27,8 +32,7 @@
 
         <activity
             android:name=".RecipeListActivity"
-            android:label="@string/title_activity_recipe_list">
-        </activity>
+            android:label="@string/title_activity_recipe_list"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

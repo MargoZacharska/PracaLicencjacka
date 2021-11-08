@@ -1,6 +1,9 @@
 package com.example.cookmaster.services;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,7 +12,9 @@ import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.cookmaster.MainActivity;
 import com.example.cookmaster.R;
+import com.example.cookmaster.RecipeActivity;
 import com.example.cookmaster.model.Recipe;
 
 import java.util.ArrayList;
@@ -49,10 +54,21 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
         Recipe recipe = this.recipes.get(position);
 
         ((ImageView) convertView.findViewById(R.id.recipe_image)).setImageDrawable(recipe.image);
-        ((TextView) convertView.findViewById(R.id.recipe_title)).setText(recipe.title);
+        ((TextView) convertView.findViewById(R.id.recipe_title)).setText(recipe.name);
         ((TextView) convertView.findViewById(R.id.recipe_category)).setText(recipe.category);
         ((TextView) convertView.findViewById(R.id.recipe_preparation_time)).setText("Czas przygotowania: " + recipe.preparationTime);
 
+        View.OnClickListener clickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Context context = view.getContext();
+                Intent intent = new Intent(context, RecipeActivity.class);
+                intent.putExtra("recipeId", recipe.id);
+
+                context.startActivity(intent);
+            }
+        };
+        convertView.setOnClickListener(clickListener);
         return convertView;
     }
 
@@ -71,7 +87,7 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
                     String searchStr = constraint.toString().toLowerCase();
 
                     for (Recipe recipe : allRecipes) {
-                        if (recipe.title.contains(searchStr) || recipe.category.contains(searchStr)) {
+                        if (recipe.name.contains(searchStr) || recipe.category.contains(searchStr)) {
                             resultsModel.add(recipe);
                         }
                         filterResults.count = resultsModel.size();
