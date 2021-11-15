@@ -6,8 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".RecipeActivity"
-    tools:deviceIds="wear">
+    tools:context=".RecipeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -29,6 +28,12 @@
             android:layout_height="wrap_content"
             android:text="Moj wspaniały przepis "
             android:layout_below="@id/single_recipe_image"/>
+
+        <ListView
+            android:id="@+id/recipe_steps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/single_recipe_search"/>
 
     </RelativeLayout>
 </androidx.wear.widget.BoxInsetLayout>

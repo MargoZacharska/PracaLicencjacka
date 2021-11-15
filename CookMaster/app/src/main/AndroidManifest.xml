@@ -32,7 +32,7 @@
 
         <activity
             android:name=".RecipeListActivity"
-            android:label="@string/title_activity_recipe_list"></activity>
+            android:label="@string/title_activity_recipe_list" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

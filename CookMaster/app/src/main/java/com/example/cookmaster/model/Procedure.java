@@ -1,6 +1,10 @@
 package com.example.cookmaster.model;
 
 public class Procedure {
+    public Procedure(String description){
+        this.description = description;
+    }
+
     public Procedure(int id, int recipe_id, String description, int order_number){
         this.id = id;
         this.recipe_id = recipe_id;
