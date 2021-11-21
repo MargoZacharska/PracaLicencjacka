@@ -12,6 +12,7 @@ import android.graphics.drawable.ScaleDrawable;
 import android.media.Rating;
 
 import com.example.cookmaster.db.LocalDbConnector;
+import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
 
@@ -52,7 +53,15 @@ public class DataService {
             stepValues.put("ORDER_NUMBER", order++);
             Db.insert("procedure", null, stepValues);
         }
+    }
 
+    public void AddAnnotation(AnnotationRecipe annotation) {
+        ContentValues values = new ContentValues();
+        values.put("PROCEDURE_ID", annotation.procedure_id);
+        values.put("USER_ID", annotation.user_id);
+        values.put("DESCRIPTION", annotation.description);
+
+        Db.insert("ANNOTATION_RECIPE", null, values);
     }
 
     public List<Recipe> GetRecipes() {
@@ -88,7 +97,32 @@ public class DataService {
         return result;
     }
 
-    private Procedure ReadProcedure(Cursor cursor) {
+    public List<AnnotationRecipe> GetAnnotations(int recipeId) {
+        List<AnnotationRecipe> result = new ArrayList<AnnotationRecipe>();
+
+        Cursor cursor = Db.rawQuery(
+                "SELECT a.* " +
+                    "FROM recipe r JOIN procedure p ON(r.RECIPE_ID = p.RECIPE_ID) JOIN ANNOTATION_RECIPE a ON(a.PROCEDURE_ID = p.PROCEDURE_ID) " +
+                    "WHERE r.recipe_id = ?;",
+                new String[]{recipeId + ""});
+
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(ReadAnnotation(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    private AnnotationRecipe ReadAnnotation(Cursor cursor) {
+        return new AnnotationRecipe(
+                cursor.getInt(0),
+                cursor.getInt(1),
+                cursor.getInt(2),
+                cursor.getString(3));
+    }
+
+        private Procedure ReadProcedure(Cursor cursor) {
         return new Procedure(
                 cursor.getInt(0),
                 cursor.getInt(1),

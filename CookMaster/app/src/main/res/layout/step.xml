@@ -1,10 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/step_desc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-</LinearLayout>
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/notesNumber"/>
+
+    <TextView
+        android:id="@+id/notesNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:minWidth="50px"
+        android:minHeight="50px"
+        android:background="@drawable/rounded"
+        android:layout_toLeftOf="@+id/addNoteButton"/>
+    />
+
+    <Button
+        android:id="@+id/addNoteButton"
+        android:layout_width="150px"
+        android:layout_height="match_parent"
+        android:text="Zmień"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>
