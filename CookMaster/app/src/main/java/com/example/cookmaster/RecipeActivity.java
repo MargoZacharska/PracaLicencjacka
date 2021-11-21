@@ -1,6 +1,8 @@
 package com.example.cookmaster;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.cookmaster.model.Procedure;
@@ -8,6 +10,7 @@ import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
 import com.example.cookmaster.services.RecipeListAdapter;
 import com.example.cookmaster.services.RecipeStepsAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +36,12 @@ public class RecipeActivity extends Activity {
         setContentView(R.layout.activity_recipe);
         DataService dataService = new DataService(this);
         int recipeId = getIntent().getIntExtra("recipeId", 0);
+
+        SharedPreferences sharedPref = getSharedPreferences("abs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("LastVisitedRecipe", recipeId);
+        editor.apply();
+
         Recipe recipe = dataService.GetRecipe(recipeId);
 
         ImageView image = (ImageView)findViewById(R.id.single_recipe_image);
@@ -42,5 +51,9 @@ public class RecipeActivity extends Activity {
         RecipeStepsAdapter adapter = new RecipeStepsAdapter(this, steps);
         ListView recipeList = ((ListView)findViewById(R.id.recipe_steps));
         recipeList.setAdapter(adapter);
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe);
+        bottomNavigationView.setSelectedItemId(R.id.action_last);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
     }
 }

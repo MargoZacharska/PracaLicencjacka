@@ -13,6 +13,7 @@ import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
 import com.example.cookmaster.services.RecipeListAdapter;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,10 @@ public class RecipeListActivity extends Activity {
         ListView recipeList = ((ListView)findViewById(R.id.recipe_list_view));
         recipeList.setAdapter(adapter);
         recipeList.setTextFilterEnabled(true);
+
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe_list);
+        bottomNavigationView.setSelectedItemId(R.id.action_recipes);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
 
         ((EditText)findViewById(R.id.recipe_search)).addTextChangedListener(new TextWatcher(){
 

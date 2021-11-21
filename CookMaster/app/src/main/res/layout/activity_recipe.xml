@@ -33,7 +33,17 @@
             android:id="@+id/recipe_steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/single_recipe_search"/>
+            android:layout_below="@+id/single_recipe_search"
+            android:layout_above="@+id/bottom_navigation_recipe"/>
 
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            app:menu="@menu/menu"
+            app:itemBackground="@color/purple_700"
+            app:itemIconTint="@android:color/white"
+            app:itemTextColor="@android:color/white" />
     </RelativeLayout>
 </androidx.wear.widget.BoxInsetLayout>

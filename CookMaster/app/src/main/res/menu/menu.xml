@@ -15,7 +15,7 @@
         android:enabled="true"
         app:showAsAction="ifRoom|withText"/>
     <item
-        android:id="@+id/action_favorites"
+        android:id="@+id/action_last"
         android:icon="@drawable/ic_baseline_bookmark_24"
         android:title="@string/Zakładki"
         android:enabled="true"
