@@ -1,6 +1,7 @@
 package com.example.cookmaster;
 
 import android.app.Activity;
+import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
@@ -51,7 +53,7 @@ public class RecipeActivity extends Activity {
             List<Procedure> steps = dataService.GetRecipeSteps(recipeId);
             List<AnnotationRecipe> annotations = dataService.GetAnnotations(recipeId);
             RecipeStepsAdapter adapter = new RecipeStepsAdapter(this, steps, annotations, dataService);
-            ListView recipeList = ((ListView)findViewById(R.id.recipe_steps));
+            ExpandableListView recipeList = ((ExpandableListView)findViewById(R.id.recipe_steps));
             recipeList.setAdapter(adapter);
         }
 

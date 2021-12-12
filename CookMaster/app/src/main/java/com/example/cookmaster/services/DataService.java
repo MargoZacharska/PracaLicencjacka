@@ -61,7 +61,12 @@ public class DataService {
         values.put("USER_ID", annotation.user_id);
         values.put("DESCRIPTION", annotation.description);
 
-        Db.insert("ANNOTATION_RECIPE", null, values);
+        long id = Db.insert("ANNOTATION_RECIPE", null, values);
+        annotation.id = id;
+    }
+
+    public void RemoveAnnotation(long annotationId) {
+        long id = Db.delete("ANNOTATION_RECIPE", "ANNOTATION_ID=?", new String[] {"" + annotationId});
     }
 
     public List<Recipe> GetRecipes() {

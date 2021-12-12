@@ -8,7 +8,7 @@ public class AnnotationRecipe {
         this.description = description;
     }
 
-    public int id;
+    public long id;
     public int user_id;
     public int procedure_id;
     public String description;

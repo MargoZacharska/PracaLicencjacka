@@ -30,7 +30,7 @@
             android:textSize="28dp"
             android:layout_below="@id/single_recipe_image"/>
 
-        <ListView
+        <ExpandableListView
             android:id="@+id/recipe_steps"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
