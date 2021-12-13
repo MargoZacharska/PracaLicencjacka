@@ -61,7 +61,7 @@ public class RecipeStepsAdapter extends BaseExpandableListAdapter {
                     AnnotationRecipe newAnnotation = new AnnotationRecipe(0, 1, step.id, input.getText().toString());
                     dataService.AddAnnotation(newAnnotation);
                     notes.add(newAnnotation);
-                    container.refreshDrawableState();
+                    notifyDataSetChanged();
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -128,8 +128,7 @@ public class RecipeStepsAdapter extends BaseExpandableListAdapter {
                 public void onClick(DialogInterface dialog, int which) {
                     dataService.RemoveAnnotation(annotation.id);
                     notes.remove(annotation);
-                    container.refreshDrawableState();
-                    //ToDo: sublist and annotation number are not refreshed
+                    notifyDataSetChanged();
                 }
             });
             builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
