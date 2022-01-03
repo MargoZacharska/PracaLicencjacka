@@ -11,40 +11,71 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding"
-        app:menu="@menu/menu">
+        android:padding="@dimen/inner_frame_layout_padding">
 
-        <ImageView
-            android:id="@+id/single_recipe_image"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:layout_alignParentTop="true"
-            android:paddingVertical="3px" />
+            android:layout_height="0dp"
+            android:layout_above="@+id/bottom_navigation_recipe"
+            android:fillViewport="true"
+            android:layout_alignParentTop="true">
 
-        <TextView
-            android:id="@+id/single_recipe_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Moj wspaniały przepis "
-            android:textSize="28dp"
-            android:layout_below="@id/single_recipe_image"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <ExpandableListView
-            android:id="@+id/recipe_steps"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/single_recipe_search"
-            android:layout_above="@+id/bottom_navigation_recipe"/>
+                <ImageView
+                    android:id="@+id/single_recipe_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:paddingVertical="3px" />
+
+                <TextView
+                    android:id="@+id/single_recipe_search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Moj wspaniały przepis "
+                    android:textSize="28dp"/>
+
+                <TextView
+                    android:id="@+id/steps_label"
+                    android:layout_marginTop="10px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#f8f8f8"
+                    android:text="Kroki Przepisu" />
+
+                <com.example.cookmaster.CustomExpandableListView
+                    android:id="@+id/recipe_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#f8f8f8" />
+
+                <TextView
+                    android:id="@+id/ingredients_label"
+                    android:layout_marginTop="10px"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:text="Kroki Przepisu" />
+
+                <com.example.cookmaster.CustomListView
+                    android:id="@+id/ingredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </ScrollView>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation_recipe"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            app:menu="@menu/menu"
             app:itemBackground="@color/purple_700"
             app:itemIconTint="@android:color/white"
-            app:itemTextColor="@android:color/white" />
+            app:itemTextColor="@android:color/white"
+            app:menu="@menu/menu" />
     </RelativeLayout>
 </androidx.wear.widget.BoxInsetLayout>

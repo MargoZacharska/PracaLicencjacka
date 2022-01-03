@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -55,6 +56,10 @@ public class RecipeActivity extends Activity {
             RecipeStepsAdapter adapter = new RecipeStepsAdapter(this, steps, annotations, dataService);
             ExpandableListView recipeList = ((ExpandableListView)findViewById(R.id.recipe_steps));
             recipeList.setAdapter(adapter);
+
+            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {"aa", "b"});
+            ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
+            ingredientsList.setAdapter(adapter2);
         }
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe);
