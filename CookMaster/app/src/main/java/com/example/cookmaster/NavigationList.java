@@ -27,8 +27,8 @@ public class NavigationList implements BottomNavigationView.OnNavigationItemSele
                     Toast.makeText(context, "Main", Toast.LENGTH_SHORT).show();
                 }
                 else {
-//                    Intent intent = new Intent(context, RecipeListActivity.class);
-//                    context.startActivity(intent);
+                    Intent intent = new Intent(context, MainActivity.class);
+                    context.startActivity(intent);
                 }
                 break;
             case R.id.action_recipes:

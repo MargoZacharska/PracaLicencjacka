@@ -13,11 +13,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.CookMaster">
-        <activity
-            android:name=".RecipeActivity"
-            android:exported="false"
-            android:label="@string/title_activity_recipe"
-            android:theme="@style/Theme.CookMaster.NoActionBar" />
 
         <uses-library
             android:name="com.google.android.wearable"
@@ -30,6 +25,11 @@
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
 
+        <activity
+            android:name=".RecipeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_recipe"
+            android:theme="@style/Theme.CookMaster.NoActionBar" />
         <activity
             android:name=".RecipeListActivity"
             android:label="@string/title_activity_recipe_list" />
