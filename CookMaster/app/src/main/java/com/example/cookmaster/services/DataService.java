@@ -12,7 +12,10 @@ import android.graphics.drawable.ScaleDrawable;
 import android.media.Rating;
 
 import com.example.cookmaster.db.LocalDbConnector;
+import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.model.AnnotationRecipe;
+import com.example.cookmaster.model.Ingredient;
+import com.example.cookmaster.model.IngredientRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
 
@@ -31,7 +34,7 @@ public class DataService {
         Db = test.getWritableDatabase();
     }
 
-    public void AddRecipe(Recipe recipe, List<Procedure> steps) {
+    public void AddRecipe(Recipe recipe, List<Procedure> steps, List<IngredientRecipe> ingredients) {
         Bitmap bitmap = ((BitmapDrawable)recipe.image).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -53,6 +56,27 @@ public class DataService {
             stepValues.put("ORDER_NUMBER", order++);
             Db.insert("procedure", null, stepValues);
         }
+
+        for (IngredientRecipe ing : ingredients) {
+            ContentValues stepValues = new ContentValues();
+            stepValues.put("INGREDIENT_ID", ing.ingredient_id);
+            stepValues.put("RECIPE_ID", recipeId);
+            stepValues.put("QUANTITY", ing.quantity);
+            Db.insert("INGREDIENT_RECIPE", null, stepValues);
+        }
+    }
+
+    public void AddAIngredient(Ingredient ingredient) {
+        ContentValues values = new ContentValues();
+        values.put("NAME", ingredient.name);
+        values.put("CARBOHYDRATES", ingredient.carbohydrates);
+        values.put("FATS", ingredient.fats);
+        values.put("PROTEINS", ingredient.proteins);
+        values.put("KCAL", ingredient.kcal);
+        values.put("COST", ingredient.cost);
+
+        long id = Db.insert("INGREDIENT", null, values);
+        ingredient.id = id;
     }
 
     public void AddAnnotation(AnnotationRecipe annotation) {
@@ -119,6 +143,34 @@ public class DataService {
         return result;
     }
 
+    public List<RecipeIngredient> GetIngredients(int recipeId) {
+        List<RecipeIngredient> result = new ArrayList<RecipeIngredient>();
+
+        Cursor cursor = Db.rawQuery(
+                "SELECT i.*, ir.QUANTITY " +
+                    "FROM recipe r JOIN INGREDIENT_RECIPE ir ON(r.RECIPE_ID = ir.RECIPE_ID) JOIN INGREDIENT i ON(ir.INGREDIENT_ID = i.INGREDIENT_ID) " +
+                    "WHERE r.recipe_id = ?;",
+                new String[]{recipeId + ""});
+
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(ReadRecipeIngredient(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    private RecipeIngredient ReadRecipeIngredient(Cursor cursor) {
+        return new RecipeIngredient(
+                cursor.getInt(8),
+                cursor.getString(1),
+                cursor.getInt(2),
+                cursor.getInt(3),
+                cursor.getInt(4),
+                cursor.getInt(5),
+                cursor.getInt(6));
+    }
+
     private AnnotationRecipe ReadAnnotation(Cursor cursor) {
         return new AnnotationRecipe(
                 cursor.getInt(0),
@@ -127,7 +179,7 @@ public class DataService {
                 cursor.getString(3));
     }
 
-        private Procedure ReadProcedure(Cursor cursor) {
+    private Procedure ReadProcedure(Cursor cursor) {
         return new Procedure(
                 cursor.getInt(0),
                 cursor.getInt(1),

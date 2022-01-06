@@ -39,7 +39,8 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "ATTRIBUTE TEXT);\n ";
 
     private final String IngredientRecipeTable = "create table INGREDIENT_RECIPE ("
-            + "INGREDIENT_ID INTEGER NOT NULL primary key autoincrement,"
+            + "INGREDIENT_RECIPE_ID INTEGER NOT NULL primary key autoincrement,"
+            + "INGREDIENT_ID INTEGER NOT NULL,"
             + "RECIPE_ID INTEGER NOT NULL,"
             + "QUANTITY INTEGER);\n ";
 

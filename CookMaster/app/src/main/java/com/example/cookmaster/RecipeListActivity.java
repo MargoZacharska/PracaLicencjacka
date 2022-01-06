@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.cookmaster.db.FakeDataHelper;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
@@ -29,7 +30,7 @@ public class RecipeListActivity extends Activity {
         dataService = new DataService(this);
         setContentView(R.layout.activity_recipe_list);
 
-        //addTestData();
+        //FakeDataHelper.addTestData(dataService, this);
 
         List<Recipe> recipes = dataService.GetRecipes();
 
@@ -57,52 +58,5 @@ public class RecipeListActivity extends Activity {
                 adapter.getFilter().filter(s);
             }
         });
-    }
-
-    private void addTestData() {
-        dataService.AddRecipe(
-                new Recipe(1, "Taka tam beza", "ciasto", "", "", getResources().getDrawable(R.drawable.beza_mini)),
-                Arrays.asList(
-                    new Procedure("Idz do sklepu"),
-                    new Procedure("Wybierz beze"),
-                    new Procedure("Zaplac w kasie")
-                ));
-        dataService.AddRecipe(
-                new Recipe(1, "Dobre na sniadanie", "obiad", "", "", getResources().getDrawable(R.drawable.frittata_mini)),
-                Arrays.asList(
-                        new Procedure("Idz do kurnika"),
-                        new Procedure("Zabierz kurze jajka"),
-                        new Procedure("Stłucz na patelni"),
-                        new Procedure("Usmaż")
-                ));
-        dataService.AddRecipe(
-                new Recipe(1, "Zielenina", "salatka", "", "", getResources().getDrawable(R.drawable.salatka_mini)),
-                Arrays.asList(
-                        new Procedure("Idz na trawnik w parku"),
-                        new Procedure("Skoś zielone kieleckim scyzorykiem"),
-                        new Procedure("Wymieszaj w misie"),
-                        new Procedure("Polej oliwą")
-                ));
-        dataService.AddRecipe(
-                new Recipe(1, "Cos z jablek", "ciasto", "", "", getResources().getDrawable(R.drawable.szarlotka_mini)),
-                Arrays.asList(
-                        new Procedure("Ukradnij łabłka sąsiadowi"),
-                        new Procedure("Przeciśniej przez praskę"),
-                        new Procedure("Piecz 20 min")
-                ));
-        dataService.AddRecipe(new Recipe(1, "Jesienna zupa", "zupa", "", "", getResources().getDrawable(R.drawable.zupa_dyniowa_mini)),
-                Arrays.asList(
-                        new Procedure("Zabierze dynie z Halloween"),
-                        new Procedure("Rozgnieć młotkiem"),
-                        new Procedure("Gotuj na wolnym ogniu"),
-                        new Procedure("Przelej do misy")
-                ));
-        dataService.AddRecipe(new Recipe(1, "torcik", "ciasto", "", "", getResources().getDrawable(R.drawable.tort_piernikowy_mini)),
-                Arrays.asList(
-                        new Procedure("Kup pierniki na allegro"),
-                        new Procedure("Odbierz z paczkomatu"),
-                        new Procedure("Poukładaj na talerzu"),
-                        new Procedure("Polej lukrem")
-                ));
     }
 }

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
@@ -30,7 +31,10 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.cookmaster.databinding.ActivityRecipeBinding;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecipeActivity extends Activity {
 
@@ -53,13 +57,14 @@ public class RecipeActivity extends Activity {
 
             List<Procedure> steps = dataService.GetRecipeSteps(recipeId);
             List<AnnotationRecipe> annotations = dataService.GetAnnotations(recipeId);
-            RecipeStepsAdapter adapter = new RecipeStepsAdapter(this, steps, annotations, dataService);
+            RecipeStepsAdapter stepAdapter = new RecipeStepsAdapter(this, steps, annotations, dataService);
             ExpandableListView recipeList = ((ExpandableListView)findViewById(R.id.recipe_steps));
-            recipeList.setAdapter(adapter);
+            recipeList.setAdapter(stepAdapter);
 
-            ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new String[] {"aa", "b"});
+            List<String> ingredients = dataService.GetIngredients(recipeId).stream().map(x -> x.name).collect(Collectors.toList());
+            ArrayAdapter<String> ingredientAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, ingredients);
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
-            ingredientsList.setAdapter(adapter2);
+            ingredientsList.setAdapter(ingredientAdapter);
         }
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe);
