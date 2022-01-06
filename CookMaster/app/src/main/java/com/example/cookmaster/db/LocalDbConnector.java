@@ -36,6 +36,7 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "PROTEINS INTEGER,"
             + "KCAL INTEGER,"
             + "COST INTEGER,"
+            + "UNITS TEXT,"
             + "ATTRIBUTE TEXT);\n ";
 
     private final String IngredientRecipeTable = "create table INGREDIENT_RECIPE ("

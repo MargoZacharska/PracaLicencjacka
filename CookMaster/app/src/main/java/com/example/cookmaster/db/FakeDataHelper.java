@@ -14,19 +14,19 @@ import java.util.Arrays;
 public class FakeDataHelper {
     public static void addTestData(DataService dataService, Activity activity) {
 
-        Ingredient woda = new Ingredient(0, "woda", 0, 0, 0, 0, 0);
+        Ingredient woda = new Ingredient(0, "woda", 0, 0, 0, 0, 0, "ml");
         dataService.AddAIngredient(woda);
 
-        Ingredient cukier = new Ingredient(0, "cukier", 0, 0, 0, 0, 0);
+        Ingredient cukier = new Ingredient(0, "cukier", 0, 0, 0, 0, 0, "g");
         dataService.AddAIngredient(cukier);
 
-        Ingredient maka = new Ingredient(0, "mąka", 0, 0, 0, 0, 0);
+        Ingredient maka = new Ingredient(0, "mąka", 0, 0, 0, 0, 0, "g");
         dataService.AddAIngredient(maka);
 
-        Ingredient kurczak = new Ingredient(0, "pierś kurczaka", 0, 0, 0, 0, 0);
+        Ingredient kurczak = new Ingredient(0, "pierś kurczaka", 0, 0, 0, 0, 0, "g");
         dataService.AddAIngredient(kurczak);
 
-        Ingredient chili = new Ingredient(0, "chili", 0, 0, 0, 0, 0);
+        Ingredient chili = new Ingredient(0, "świeże chili", 0, 0, 0, 0, 0, "g");
         dataService.AddAIngredient(chili);
 
         dataService.AddRecipe(

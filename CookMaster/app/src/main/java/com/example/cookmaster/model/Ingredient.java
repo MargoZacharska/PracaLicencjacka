@@ -1,7 +1,7 @@
 package com.example.cookmaster.model;
 
 public class Ingredient {
-    public Ingredient(long id, String name, double carbohydrates, double fats, double proteins, int kcal, double cost){
+    public Ingredient(long id, String name, double carbohydrates, double fats, double proteins, int kcal, double cost, String units){
         this.id = id;
         this.name = name;
         this.carbohydrates = carbohydrates;
@@ -9,6 +9,7 @@ public class Ingredient {
         this.proteins = proteins;
         this.kcal = kcal;
         this.cost = cost;
+        this.units = units;
     }
 
     public long id;
@@ -18,4 +19,5 @@ public class Ingredient {
     public double proteins;
     public int kcal;
     public double cost;
+    public String units;
 }

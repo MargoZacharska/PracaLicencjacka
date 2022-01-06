@@ -1,4 +1,4 @@
-package com.example.cookmaster.services;
+package com.example.cookmaster.adapters;
 
 import android.app.Activity;
 import android.content.Context;
@@ -18,6 +18,7 @@ import com.example.cookmaster.R;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
+import com.example.cookmaster.services.DataService;
 
 import java.util.List;
 import java.util.stream.Collectors;

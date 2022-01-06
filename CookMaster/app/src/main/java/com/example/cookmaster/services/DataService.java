@@ -74,6 +74,7 @@ public class DataService {
         values.put("PROTEINS", ingredient.proteins);
         values.put("KCAL", ingredient.kcal);
         values.put("COST", ingredient.cost);
+        values.put("UNITS", ingredient.units);
 
         long id = Db.insert("INGREDIENT", null, values);
         ingredient.id = id;
@@ -162,13 +163,14 @@ public class DataService {
 
     private RecipeIngredient ReadRecipeIngredient(Cursor cursor) {
         return new RecipeIngredient(
-                cursor.getInt(8),
+                cursor.getInt(9),
                 cursor.getString(1),
                 cursor.getInt(2),
                 cursor.getInt(3),
                 cursor.getInt(4),
                 cursor.getInt(5),
-                cursor.getInt(6));
+                cursor.getInt(6),
+                cursor.getString(7));
     }
 
     private AnnotationRecipe ReadAnnotation(Cursor cursor) {

@@ -1,38 +1,24 @@
 package com.example.cookmaster;
 
 import android.app.Activity;
-import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import com.example.cookmaster.adapters.IngredientAdapter;
 import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
-import com.example.cookmaster.services.RecipeListAdapter;
-import com.example.cookmaster.services.RecipeStepsAdapter;
+import com.example.cookmaster.adapters.RecipeStepsAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.snackbar.Snackbar;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.cookmaster.databinding.ActivityRecipeBinding;
-
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,8 +47,8 @@ public class RecipeActivity extends Activity {
             ExpandableListView recipeList = ((ExpandableListView)findViewById(R.id.recipe_steps));
             recipeList.setAdapter(stepAdapter);
 
-            List<String> ingredients = dataService.GetIngredients(recipeId).stream().map(x -> x.name).collect(Collectors.toList());
-            ArrayAdapter<String> ingredientAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, ingredients);
+            List<RecipeIngredient> ingredients = dataService.GetIngredients(recipeId);//.stream().map(x -> x.name).collect(Collectors.toList());
+            IngredientAdapter ingredientAdapter = new IngredientAdapter(this, R.layout.ingredient, ingredients);
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
             ingredientsList.setAdapter(ingredientAdapter);
         }

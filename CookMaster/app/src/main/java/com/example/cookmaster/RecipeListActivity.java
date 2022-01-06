@@ -4,20 +4,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.cookmaster.db.FakeDataHelper;
-import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
-import com.example.cookmaster.services.RecipeListAdapter;
+import com.example.cookmaster.adapters.RecipeListAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class RecipeListActivity extends Activity {
