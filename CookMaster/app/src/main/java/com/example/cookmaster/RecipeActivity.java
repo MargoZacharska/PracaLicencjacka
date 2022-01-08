@@ -14,10 +14,13 @@ import com.example.cookmaster.services.DataService;
 import com.example.cookmaster.adapters.RecipeStepsAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,6 +59,14 @@ public class RecipeActivity extends Activity {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe);
         bottomNavigationView.setSelectedItemId(R.id.action_last);
         bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
+
+        ((Button)findViewById(R.id.add_to_shopping_list)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dataService.AddRecipeToUser(recipeId, 0);
+                Toast.makeText(RecipeActivity.this, "Przepis dodany do listy zakupów", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void storeLastViewedRecipe(int recipeId) {

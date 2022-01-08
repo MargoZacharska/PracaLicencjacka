@@ -31,6 +31,7 @@ public class NavigationList implements BottomNavigationView.OnNavigationItemSele
                     context.startActivity(intent);
                 }
                 break;
+
             case R.id.action_recipes:
                 if(context instanceof RecipeListActivity)
                 {
@@ -41,6 +42,7 @@ public class NavigationList implements BottomNavigationView.OnNavigationItemSele
                     context.startActivity(intent);
                 }
                 break;
+
             case R.id.action_last:
                 if(context instanceof RecipeActivity)
                 {
@@ -53,12 +55,20 @@ public class NavigationList implements BottomNavigationView.OnNavigationItemSele
                     context.startActivity(intent);
                 }
                 break;
+
             case R.id.my_week:
                 Toast.makeText(context, "My week", Toast.LENGTH_SHORT).show();
                 break;
+
             case R.id.action_shopping:
-                Toast.makeText(context, "Shopping list", Toast.LENGTH_SHORT).show();
-                context.setContentView(R.layout.shopping_list);
+                if(context instanceof ShoppingList)
+                {
+                    Toast.makeText(context, "Shopping list", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(context, ShoppingList.class);
+                    context.startActivity(intent);
+                }
                 break;
         }
         return true;

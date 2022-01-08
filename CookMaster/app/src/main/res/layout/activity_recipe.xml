@@ -32,6 +32,13 @@
                     android:adjustViewBounds="true"
                     android:paddingVertical="3px" />
 
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Dodaj do listy zakupów"
+                    android:background="#18d838"
+                    android:id="@+id/add_to_shopping_list"/>
+
                 <TextView
                     android:id="@+id/single_recipe_search"
                     android:layout_width="match_parent"

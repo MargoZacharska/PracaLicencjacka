@@ -13,6 +13,7 @@ import android.media.Rating;
 
 import com.example.cookmaster.db.LocalDbConnector;
 import com.example.cookmaster.domain.RecipeIngredient;
+import com.example.cookmaster.domain.ShoppingEntry;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Ingredient;
 import com.example.cookmaster.model.IngredientRecipe;
@@ -64,6 +65,31 @@ public class DataService {
             stepValues.put("QUANTITY", ing.quantity);
             Db.insert("INGREDIENT_RECIPE", null, stepValues);
         }
+    }
+
+    public void AddRecipeToUser(long recipeId, long userId) {
+        ContentValues values = new ContentValues();
+        values.put("RECIPE_ID", recipeId);
+        values.put("USER_ID", userId);
+
+        long id = Db.insert("USER_RECIPE", null, values);
+    }
+
+    public List<ShoppingEntry> GetShoppingList(long userId) {
+        List<ShoppingEntry> result = new ArrayList<ShoppingEntry>();
+
+        String sql = "SELECT i.NAME, i.UNITS, SUM(ir.quantity) " +
+                "FROM user_recipe ur JOIN INGREDIENT_RECIPE ir ON(ur.RECIPE_ID = ir.RECIPE_ID) JOIN INGREDIENT i ON(ir.INGREDIENT_ID = i.INGREDIENT_ID) " +
+                "WHERE ur.user_id = ? " +
+                "GROUP BY i.INGREDIENT_ID, i.UNITS;";
+        Cursor cursor = Db.rawQuery(sql, new String[]{userId + ""});
+
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(ReadShoppingEntry(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
     }
 
     public void AddAIngredient(Ingredient ingredient) {
@@ -202,5 +228,13 @@ public class DataService {
                 cursor.getString(3),
                 cursor.getString(4),
                 d);
+    }
+
+    private ShoppingEntry ReadShoppingEntry(Cursor cursor) {
+        return new ShoppingEntry(
+                false,
+                cursor.getString(0),
+                cursor.getInt(2),
+                cursor.getString(1));
     }
 }

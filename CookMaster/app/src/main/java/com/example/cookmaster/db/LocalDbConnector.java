@@ -19,6 +19,12 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "PREPARATION_TIME TIME,"
             + "PHOTO BLOB);\n ";
 
+    private final String UserRecipeTable = "create table USER_RECIPE ("
+            + "USER_RECIPE_ID INTEGER NOT NULL primary key autoincrement,"
+            + "RECIPE_ID INTEGER NOT NULL,"
+            + "USER_ID INTEGER NOT NULL);\n ";
+
+
     private final String UserTable = "create table USER ("
             + "USER_ID INTEGER NOT NULL primary key autoincrement,"
             + "NAME TEXT,"
@@ -82,6 +88,7 @@ public class LocalDbConnector extends SQLiteOpenHelper {
 
        // db.execSQL(UserTable);
         db.execSQL(RecipeTable);
+        db.execSQL(UserRecipeTable);
         db.execSQL(IngredientTable);
         db.execSQL(IngredientRecipeTable);
         db.execSQL(ProcedureTable);
