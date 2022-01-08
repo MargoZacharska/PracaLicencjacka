@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
+        android:layout_above="@+id/bottom_navigation_shopping_list"
         android:id="@+id/shopping_list"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -20,6 +21,6 @@
         app:itemBackground="@color/purple_700"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
-        android:layout_alignParentEnd="true"
+                android:layout_alignParentEnd="true"
         app:menu="@menu/menu" />
 </RelativeLayout>

@@ -15,24 +15,27 @@ import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ChoppingListAdapter extends BaseAdapter {
 
-    public ChoppingListAdapter(List<ShoppingEntry> entries, boolean showBought, Activity context, DataService dataService) {
+    public ChoppingListAdapter(List<ShoppingEntry> entries, Activity context, DataService dataService) {
         this.entries = entries;
-        this.showBought = showBought;
         this.context = context;
         this.dataService = dataService;
+        toBuy = entries.stream().filter(x -> !x.isBought).collect(Collectors.toList());
+        bought = entries.stream().filter(x -> x.isBought).collect(Collectors.toList());
     }
 
     private List<ShoppingEntry> entries;
-    private boolean showBought;
+    private List<ShoppingEntry> toBuy;
+    private List<ShoppingEntry> bought;
     private Activity context;
     private DataService dataService;
 
     @Override
     public int getCount() {
-        return (int) entries.stream().filter(x -> x.isBought == showBought).count();
+        return entries.size();
     }
 
     @Override
@@ -60,6 +63,7 @@ public class ChoppingListAdapter extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 entry.isBought = !entry.isBought;
+                move(entry);
                 //dataService TODO: mark as taken in DB
                 notifyDataSetChanged();
             }
@@ -68,6 +72,21 @@ public class ChoppingListAdapter extends BaseAdapter {
     }
 
     private ShoppingEntry get(int idx){
-        return entries.stream().filter(x -> x.isBought == showBought).skip(idx).findFirst().get();
+        if(idx < toBuy.size()) return toBuy.get(idx);
+        return bought.get(idx - toBuy.size());
+    }
+
+    private void move(ShoppingEntry entry)
+    {
+        if(entry.isBought)
+        {
+            toBuy.remove(entry);
+            bought.add(entry);
+        }
+        else
+        {
+            bought.remove(entry);
+            toBuy.add(entry);
+        }
     }
 }

@@ -24,7 +24,7 @@ public class ShoppingList extends AppCompatActivity {
         List<ShoppingEntry> shoppingEntries = dataService.GetShoppingList(0);
 
         ListView listView = findViewById(R.id.shopping_list);
-        listView.setAdapter(new ChoppingListAdapter(shoppingEntries, false, this, dataService));
+        listView.setAdapter(new ChoppingListAdapter(shoppingEntries, this, dataService));
     }
 
     @Override
