@@ -54,4 +54,12 @@ public class RecipeListActivity extends Activity {
             }
         });
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe_list);
+        bottomNavigationView.setSelectedItemId(R.id.action_recipes);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
+    }
 }

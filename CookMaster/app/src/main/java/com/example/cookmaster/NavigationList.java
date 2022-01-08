@@ -22,33 +22,21 @@ public class NavigationList implements BottomNavigationView.OnNavigationItemSele
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_search:
-                if(context instanceof MainActivity)
-                {
-                    Toast.makeText(context, "Main", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if(!(context instanceof MainActivity)) {
                     Intent intent = new Intent(context, MainActivity.class);
                     context.startActivity(intent);
                 }
                 break;
 
             case R.id.action_recipes:
-                if(context instanceof RecipeListActivity)
-                {
-                    Toast.makeText(context, "List", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if(!(context instanceof RecipeListActivity)) {
                     Intent intent = new Intent(context, RecipeListActivity.class);
                     context.startActivity(intent);
                 }
                 break;
 
             case R.id.action_last:
-                if(context instanceof RecipeActivity)
-                {
-                    Toast.makeText(context, "Recipe", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if(!(context instanceof RecipeActivity)) {
                     int lastRecipeId = context.getSharedPreferences("abs", Context.MODE_PRIVATE).getInt("LastVisitedRecipe", 0);
                     Intent intent = new Intent(context, RecipeActivity.class);
                     intent.putExtra("recipeId", lastRecipeId);
@@ -61,11 +49,7 @@ public class NavigationList implements BottomNavigationView.OnNavigationItemSele
                 break;
 
             case R.id.action_shopping:
-                if(context instanceof ShoppingList)
-                {
-                    Toast.makeText(context, "Shopping list", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                if(!(context instanceof ShoppingList)) {
                     Intent intent = new Intent(context, ShoppingList.class);
                     context.startActivity(intent);
                 }

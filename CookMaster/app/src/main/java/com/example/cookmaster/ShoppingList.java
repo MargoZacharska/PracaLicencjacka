@@ -25,7 +25,11 @@ public class ShoppingList extends AppCompatActivity {
 
         ListView listView = findViewById(R.id.shopping_list);
         listView.setAdapter(new ChoppingListAdapter(shoppingEntries, false, this, dataService));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_shopping_list);
         bottomNavigationView.setSelectedItemId(R.id.action_shopping);
         bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));

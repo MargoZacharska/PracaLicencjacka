@@ -69,6 +69,14 @@ public class RecipeActivity extends Activity {
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe);
+        bottomNavigationView.setSelectedItemId(R.id.action_last);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
+    }
+
     private void storeLastViewedRecipe(int recipeId) {
         SharedPreferences sharedPref = getSharedPreferences("abs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
