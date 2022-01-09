@@ -30,7 +30,7 @@ public class FakeDataHelper {
         dataService.AddAIngredient(chili);
 
         dataService.AddRecipe(
-                new Recipe(1, "Taka tam beza", "ciasto", "", "", activity.getResources().getDrawable(R.drawable.beza_mini)),
+                new Recipe(1, "Taka tam beza", "ciasto", "", "30 min", activity.getResources().getDrawable(R.drawable.beza_mini)),
                 Arrays.asList(
                         new Procedure("Idz do sklepu"),
                         new Procedure("Wybierz beze"),
@@ -43,7 +43,7 @@ public class FakeDataHelper {
                 ));
 
         dataService.AddRecipe(
-                new Recipe(1, "Dobre na sniadanie", "obiad", "", "", activity.getResources().getDrawable(R.drawable.frittata_mini)),
+                new Recipe(1, "Dobre na sniadanie", "obiad", "", "25 min", activity.getResources().getDrawable(R.drawable.frittata_mini)),
                 Arrays.asList(
                         new Procedure("Idz do kurnika"),
                         new Procedure("Zabierz kurze jajka"),
@@ -57,7 +57,7 @@ public class FakeDataHelper {
                 ));
 
         dataService.AddRecipe(
-                new Recipe(1, "Zielenina", "salatka", "", "", activity.getResources().getDrawable(R.drawable.salatka_mini)),
+                new Recipe(1, "Zielenina", "salatka", "", "10 min", activity.getResources().getDrawable(R.drawable.salatka_mini)),
                 Arrays.asList(
                         new Procedure("Idz na trawnik w parku"),
                         new Procedure("Skoś zielone kieleckim scyzorykiem"),
@@ -71,7 +71,7 @@ public class FakeDataHelper {
                 ));
 
         dataService.AddRecipe(
-                new Recipe(1, "Cos z jablek", "ciasto", "", "", activity.getResources().getDrawable(R.drawable.szarlotka_mini)),
+                new Recipe(1, "Cos z jablek", "ciasto", "", "1 h", activity.getResources().getDrawable(R.drawable.szarlotka_mini)),
                 Arrays.asList(
                         new Procedure("Ukradnij łabłka sąsiadowi"),
                         new Procedure("Przeciśniej przez praskę"),
@@ -83,7 +83,7 @@ public class FakeDataHelper {
                         new IngredientRecipe(cukier.id, 0, 100)
                 ));
 
-        dataService.AddRecipe(new Recipe(1, "Jesienna zupa", "zupa", "", "", activity.getResources().getDrawable(R.drawable.zupa_dyniowa_mini)),
+        dataService.AddRecipe(new Recipe(1, "Jesienna zupa", "zupa", "", "40 min", activity.getResources().getDrawable(R.drawable.zupa_dyniowa_mini)),
                 Arrays.asList(
                         new Procedure("Zabierze dynie z Halloween"),
                         new Procedure("Rozgnieć młotkiem"),
@@ -96,7 +96,7 @@ public class FakeDataHelper {
                         new IngredientRecipe(cukier.id, 0, 100)
                 ));
 
-        dataService.AddRecipe(new Recipe(1, "torcik", "ciasto", "", "", activity.getResources().getDrawable(R.drawable.tort_piernikowy_mini)),
+        dataService.AddRecipe(new Recipe(1, "torcik", "ciasto", "", "3 h", activity.getResources().getDrawable(R.drawable.tort_piernikowy_mini)),
                 Arrays.asList(
                         new Procedure("Kup pierniki na allegro"),
                         new Procedure("Odbierz z paczkomatu"),

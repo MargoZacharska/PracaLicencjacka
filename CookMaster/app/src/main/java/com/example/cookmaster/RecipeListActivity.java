@@ -18,6 +18,7 @@ import java.util.List;
 public class RecipeListActivity extends Activity {
 
     private DataService dataService;
+    private RecipeListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +30,7 @@ public class RecipeListActivity extends Activity {
 
         List<Recipe> recipes = dataService.GetRecipes();
 
-        RecipeListAdapter adapter = new RecipeListAdapter(this, recipes);
+        adapter = new RecipeListAdapter(this, recipes, dataService.GetRecipes(0));
         ListView recipeList = ((ListView)findViewById(R.id.recipe_list_view));
         recipeList.setAdapter(adapter);
         recipeList.setTextFilterEnabled(true);
@@ -61,5 +62,8 @@ public class RecipeListActivity extends Activity {
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe_list);
         bottomNavigationView.setSelectedItemId(R.id.action_recipes);
         bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
+
+        adapter.updateAddedRecipes(dataService.GetRecipes(0));
+        adapter.notifyDataSetChanged();
     }
 }

@@ -25,12 +25,23 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
     private Activity parent;
     private List<Recipe> allRecipes;
     private List<Recipe> recipes;
+    private List<Recipe> recipesAddedToShoppingList;
 
-    public RecipeListAdapter(Activity activity, List<Recipe> recipes) {
+    public RecipeListAdapter(Activity activity, List<Recipe> recipes, List<Recipe> recipesAddedToShoppingList) {
         this.parent = activity;
         this.recipes = recipes;
         this.allRecipes = recipes;
+        this.recipesAddedToShoppingList = recipesAddedToShoppingList;
     }
+
+    public void updateAddedRecipes(List<Recipe> addedRecipes)
+    {
+        if(addedRecipes.size() != recipesAddedToShoppingList.size() || recipesAddedToShoppingList.stream().filter(x -> !addedRecipes.contains(x)).count() > 0) {
+            recipesAddedToShoppingList = addedRecipes;
+            notifyDataSetChanged();
+        }
+    }
+
     @Override
     public int getCount() {
         return recipes.size();
@@ -57,6 +68,11 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
         ((TextView) convertView.findViewById(R.id.recipe_title)).setText(recipe.name);
         ((TextView) convertView.findViewById(R.id.recipe_category)).setText(recipe.category);
         ((TextView) convertView.findViewById(R.id.recipe_preparation_time)).setText("Czas przygotowania: " + recipe.preparationTime);
+
+        boolean isAddedToShoppingList = recipesAddedToShoppingList.stream().anyMatch(x -> x.id == recipe.id);
+        TextView isAddedTextView = (TextView)convertView.findViewById(R.id.recipe_is_added);
+        isAddedTextView.setText(isAddedToShoppingList? "Dadany do listy zakupów" : "");
+        isAddedTextView.setVisibility(isAddedToShoppingList? View.VISIBLE : View.INVISIBLE);
 
         View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
