@@ -3,6 +3,7 @@ package com.example.cookmaster;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.cookmaster.adapters.IngredientAdapter;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 public class RecipeActivity extends Activity {
 
+    private boolean isRecipeAdded = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,19 +56,42 @@ public class RecipeActivity extends Activity {
             IngredientAdapter ingredientAdapter = new IngredientAdapter(this, R.layout.ingredient, ingredients);
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
             ingredientsList.setAdapter(ingredientAdapter);
+
+            List<Recipe> usersRecipes = dataService.GetRecipes(0);
+            isRecipeAdded = usersRecipes.stream().anyMatch(x -> x.id == recipeId);
+
+            Button button = (Button)findViewById(R.id.add_to_shopping_list);
+            setButtonStyle(button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(isRecipeAdded)
+                    {
+                        dataService.RemoveRecipeFromUser(recipeId, 0);
+                    }
+                    else
+                    {
+                        dataService.AddRecipeToUser(recipeId, 0);
+                    }
+                    Toast.makeText(
+                            RecipeActivity.this,
+                            isRecipeAdded? "Przepis usunięty z listy zakupów" : "Przepis dodany do listy zakupów",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                    isRecipeAdded = !isRecipeAdded;
+                    setButtonStyle(button);
+                }
+            });
         }
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_recipe);
         bottomNavigationView.setSelectedItemId(R.id.action_last);
         bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
+    }
 
-        ((Button)findViewById(R.id.add_to_shopping_list)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dataService.AddRecipeToUser(recipeId, 0);
-                Toast.makeText(RecipeActivity.this, "Przepis dodany do listy zakupów", Toast.LENGTH_SHORT).show();
-            }
-        });
+    private void setButtonStyle(Button button){
+        button.setText(isRecipeAdded? "Usuń z listy zakupów" : "Dodaj do listy zakupów");
+        button.setBackgroundColor(isRecipeAdded? Color.rgb(186, 57, 32) : Color.rgb(3, 165, 252));
     }
 
     @Override

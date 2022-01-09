@@ -75,6 +75,10 @@ public class DataService {
         long id = Db.insert("USER_RECIPE", null, values);
     }
 
+    public void RemoveRecipeFromUser(long recipeId, long userId) {
+        Db.delete("USER_RECIPE", "USER_ID = ? AND RECIPE_ID = ?", new String[]{ userId + "", recipeId + "" });
+    }
+
     public List<ShoppingEntry> GetShoppingList(long userId) {
         List<ShoppingEntry> result = new ArrayList<ShoppingEntry>();
 
@@ -124,6 +128,22 @@ public class DataService {
         List<Recipe> result = new ArrayList<Recipe>();
 
         Cursor cursor = Db.rawQuery("SELECT * FROM recipe", new String[]{});
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(ReadRecipe(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    public List<Recipe> GetRecipes(long userId) {
+        List<Recipe> result = new ArrayList<Recipe>();
+
+        String sql = "SELECT r.* " +
+                "FROM user_recipe ur JOIN recipe r ON(ur.RECIPE_ID = r.RECIPE_ID) " +
+                "WHERE ur.user_id = ? ;";
+        Cursor cursor = Db.rawQuery(sql, new String[]{userId + ""});
+
         if (cursor.moveToFirst()) {
             do {
                 result.add(ReadRecipe(cursor));

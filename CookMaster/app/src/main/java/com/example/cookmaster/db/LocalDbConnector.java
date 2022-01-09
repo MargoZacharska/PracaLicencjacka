@@ -22,7 +22,9 @@ public class LocalDbConnector extends SQLiteOpenHelper {
     private final String UserRecipeTable = "create table USER_RECIPE ("
             + "USER_RECIPE_ID INTEGER NOT NULL primary key autoincrement,"
             + "RECIPE_ID INTEGER NOT NULL,"
-            + "USER_ID INTEGER NOT NULL);\n ";
+            + "USER_ID INTEGER NOT NULL, "
+            + "FOREIGN KEY (RECIPE_ID) REFERENCES RECIPE(RECIPE_ID) ON DELETE CASCADE) ;\n ";
+    //TODO: forign key to user
 
 
     private final String UserTable = "create table USER ("
@@ -49,13 +51,16 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "INGREDIENT_RECIPE_ID INTEGER NOT NULL primary key autoincrement,"
             + "INGREDIENT_ID INTEGER NOT NULL,"
             + "RECIPE_ID INTEGER NOT NULL,"
-            + "QUANTITY INTEGER);\n ";
+            + "QUANTITY INTEGER,"
+            + "FOREIGN KEY (RECIPE_ID) REFERENCES RECIPE(RECIPE_ID) ON DELETE CASCADE,"
+            + "FOREIGN KEY (INGREDIENT_ID) REFERENCES INGREDIENT(INGREDIENT_ID) ON DELETE CASCADE);\n ";
 
     private final String ProcedureTable = "create table PROCEDURE ("
             + "PROCEDURE_ID INTEGER NOT NULL primary key autoincrement,"
             + "RECIPE_ID INTEGER NOT NULL,"
             + "DESCRIPTION TEXT,"
-            + "ORDER_NUMBER INTEGER);\n ";
+            + "ORDER_NUMBER INTEGER,"
+            + "FOREIGN KEY (RECIPE_ID) REFERENCES RECIPE(RECIPE_ID) ON DELETE CASCADE);\n ";
 
     private final String RatingTable = "create table RATING ("
             + "RECIPE_ID INTEGER NOT NULL primary key autoincrement,"
@@ -67,7 +72,9 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "ANNOTATION_ID INTEGER NOT NULL primary key autoincrement,"
             + "USER_ID INTEGER NOT NULL,"
             + "PROCEDURE_ID INTEGER NOT NULL,"
-            + "DESCRIPTION TEXT);\n ";
+            + "DESCRIPTION TEXT,"
+            + "FOREIGN KEY (PROCEDURE_ID) REFERENCES PROCEDURE(PROCEDURE_ID) ON DELETE CASCADE);\n ";
+    //TODO: foreign key to user
 
     private final String TagTable = "create table TAG ("
             + "TAG_ID INTEGER NOT NULL primary key autoincrement,"
