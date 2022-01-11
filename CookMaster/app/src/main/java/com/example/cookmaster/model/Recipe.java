@@ -3,10 +3,11 @@ package com.example.cookmaster.model;
 import android.graphics.drawable.Drawable;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Objects;
 
 public class Recipe {
-    public Recipe(int id, String name, String description, String category, String preparationTime, Drawable img){
+    public Recipe(int id, String name, String description, String category, int preparationTime, Drawable img){
         this.id = id;
         this.category = category;
         this.name = name;
@@ -18,7 +19,7 @@ public class Recipe {
     public String name;
     public String description;
     public String category;
-    public String preparationTime;
+    public int preparationTime;
     public Drawable image;
 
     @Override

@@ -16,7 +16,7 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "NAME TEXT,"
             + "DESCRIPTION TEXT,"
             + "CATEGORY TEXT,"
-            + "PREPARATION_TIME TIME,"
+            + "PREPARATION_TIME INTEGER,"
             + "PHOTO BLOB);\n ";
 
     private final String UserRecipeTable = "create table USER_RECIPE ("
@@ -76,6 +76,16 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "FOREIGN KEY (PROCEDURE_ID) REFERENCES PROCEDURE(PROCEDURE_ID) ON DELETE CASCADE);\n ";
     //TODO: foreign key to user
 
+    private final String UserIngredientTable = "create table USER_INGREDIENT ("
+            + "USER_INGREDIENT_ID INTEGER NOT NULL primary key autoincrement,"
+            + "USER_ID INTEGER NOT NULL,"
+            + "INGREDIENT_ID INTEGER,"
+            + "USER_RECIPE_ID INTEGER,"
+            + "IS_BOUGHT BOOLEAN,"
+            + "FOREIGN KEY (INGREDIENT_ID) REFERENCES INGREDIENT(INGREDIENT_ID) ON DELETE CASCADE,"
+            + "FOREIGN KEY (USER_RECIPE_ID) REFERENCES USER_RECIPE(USER_RECIPE_ID) ON DELETE CASCADE);\n";
+    //TODO: foreign key to user
+
     private final String TagTable = "create table TAG ("
             + "TAG_ID INTEGER NOT NULL primary key autoincrement,"
             + "TAG TEXT);\n ";
@@ -99,10 +109,20 @@ public class LocalDbConnector extends SQLiteOpenHelper {
         db.execSQL(IngredientTable);
         db.execSQL(IngredientRecipeTable);
         db.execSQL(ProcedureTable);
+        db.execSQL(UserIngredientTable);
         //db.execSQL(RatingTable);
         db.execSQL(AnnotationRecipeTable);
         //db.execSQL(TagTable);
         //db.execSQL(RecipeTagTable);
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            // Enable foreign key constraints
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 
     @Override

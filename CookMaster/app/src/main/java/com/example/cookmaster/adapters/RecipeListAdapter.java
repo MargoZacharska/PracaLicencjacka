@@ -67,7 +67,7 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
         ((ImageView) convertView.findViewById(R.id.recipe_image)).setImageDrawable(recipe.image);
         ((TextView) convertView.findViewById(R.id.recipe_title)).setText(recipe.name);
         ((TextView) convertView.findViewById(R.id.recipe_category)).setText(recipe.category);
-        ((TextView) convertView.findViewById(R.id.recipe_preparation_time)).setText("Czas przygotowania: " + recipe.preparationTime);
+        ((TextView) convertView.findViewById(R.id.recipe_preparation_time)).setText("Czas przygotowania: " + recipe.preparationTime + " minut");
 
         boolean isAddedToShoppingList = recipesAddedToShoppingList.stream().anyMatch(x -> x.id == recipe.id);
         TextView isAddedTextView = (TextView)convertView.findViewById(R.id.recipe_is_added);

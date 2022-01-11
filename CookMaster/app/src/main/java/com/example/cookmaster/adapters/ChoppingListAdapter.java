@@ -15,6 +15,7 @@ import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ChoppingListAdapter extends BaseAdapter {
@@ -35,7 +36,7 @@ public class ChoppingListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return entries.size();
+        return toBuy.size() + bought.size();
     }
 
     @Override
@@ -64,7 +65,7 @@ public class ChoppingListAdapter extends BaseAdapter {
             public void onClick(View view) {
                 entry.isBought = !entry.isBought;
                 move(entry);
-                //dataService TODO: mark as taken in DB
+                dataService.MarkIngredientAsBought(0, entry.ingredientId);
                 notifyDataSetChanged();
             }
         });
@@ -80,13 +81,25 @@ public class ChoppingListAdapter extends BaseAdapter {
     {
         if(entry.isBought)
         {
-            toBuy.remove(entry);
-            bought.add(entry);
+            substitute(toBuy, bought, entry);
         }
         else
         {
-            bought.remove(entry);
-            toBuy.add(entry);
+            substitute(bought, toBuy, entry);
         }
+    }
+
+    private void substitute(List<ShoppingEntry> source, List<ShoppingEntry> destination, ShoppingEntry entry)
+    {
+        Optional<ShoppingEntry> e = destination.stream().filter(x -> x.ingredientId == entry.ingredientId).findFirst();
+        if(e.isPresent())
+        {
+            e.get().quantity += entry.quantity;
+        }
+        else
+        {
+            destination.add(entry);
+        }
+        source.remove(entry);
     }
 }

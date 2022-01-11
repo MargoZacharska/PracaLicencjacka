@@ -45,6 +45,7 @@ public class DataService {
         values.put("NAME", recipe.name);
         values.put("DESCRIPTION", recipe.description);
         values.put("CATEGORY", recipe.category);
+        values.put("PREPARATION_TIME", recipe.preparationTime);
         values.put("PHOTO", bitMapData);
 
         long recipeId = Db.insert("recipe", null, values);
@@ -73,19 +74,32 @@ public class DataService {
         values.put("USER_ID", userId);
 
         long id = Db.insert("USER_RECIPE", null, values);
+
+        Db.execSQL(
+                "INSERT INTO USER_INGREDIENT (USER_ID, INGREDIENT_ID, USER_RECIPE_ID, IS_BOUGHT) " +
+                    "SELECT ? AS 'USER_ID', i.INGREDIENT_ID, ? AS 'USER_RECIPE_ID', 0 AS 'IS_BOUGHT' " +
+                    "FROM INGREDIENT i JOIN INGREDIENT_RECIPE ir ON(i.INGREDIENT_ID = ir.INGREDIENT_ID) " +
+                    "WHERE ir.RECIPE_ID = ?",
+                new String[] {userId + "", id + "", recipeId + ""});
     }
 
     public void RemoveRecipeFromUser(long recipeId, long userId) {
         Db.delete("USER_RECIPE", "USER_ID = ? AND RECIPE_ID = ?", new String[]{ userId + "", recipeId + "" });
     }
 
+    public void MarkIngredientAsBought(long userId, long ingredientId) {
+        ContentValues values = new ContentValues();
+        values.put("IS_BOUGHT", true);
+        Db.update("USER_INGREDIENT", values, "user_id = ? AND INGREDIENT_ID = ?", new String[] {userId + "", ingredientId + ""});
+    }
+
     public List<ShoppingEntry> GetShoppingList(long userId) {
         List<ShoppingEntry> result = new ArrayList<ShoppingEntry>();
 
-        String sql = "SELECT i.NAME, i.UNITS, SUM(ir.quantity) " +
-                "FROM user_recipe ur JOIN INGREDIENT_RECIPE ir ON(ur.RECIPE_ID = ir.RECIPE_ID) JOIN INGREDIENT i ON(ir.INGREDIENT_ID = i.INGREDIENT_ID) " +
-                "WHERE ur.user_id = ? " +
-                "GROUP BY i.INGREDIENT_ID, i.UNITS;";
+        String sql = "SELECT i.NAME, i.UNITS, ui.IS_BOUGHT, SUM(ir.quantity), i.INGREDIENT_ID " +
+                "FROM USER_INGREDIENT ui JOIN INGREDIENT i ON(ui.INGREDIENT_ID = i.INGREDIENT_ID) JOIN INGREDIENT_RECIPE ir ON(ui.INGREDIENT_ID = ir.INGREDIENT_ID)" +
+                "WHERE ui.user_id = ? " +
+                "GROUP BY i.NAME, i.INGREDIENT_ID, i.UNITS, ui.IS_BOUGHT;";
         Cursor cursor = Db.rawQuery(sql, new String[]{userId + ""});
 
         if (cursor.moveToFirst()) {
@@ -246,15 +260,16 @@ public class DataService {
                 cursor.getString(1),
                 cursor.getString(2),
                 cursor.getString(3),
-                cursor.getString(4),
+                cursor.getInt(4),
                 d);
     }
 
     private ShoppingEntry ReadShoppingEntry(Cursor cursor) {
         return new ShoppingEntry(
-                false,
+                cursor.getShort(2) != 0,
                 cursor.getString(0),
-                cursor.getInt(2),
-                cursor.getString(1));
+                cursor.getInt(3),
+                cursor.getString(1),
+                cursor.getLong(4));
     }
 }
