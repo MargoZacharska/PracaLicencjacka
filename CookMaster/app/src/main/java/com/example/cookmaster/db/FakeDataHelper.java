@@ -29,6 +29,8 @@ public class FakeDataHelper {
         Ingredient pepper = new Ingredient(0, "pieprz", 0, 0, 0, 0, 0, "szczypy");
         dataService.AddAIngredient(pepper);
 
+        Ingredient salt = new Ingredient(0, "sól", 0, 0, 0, 0, 0, "g");
+        dataService.AddAIngredient(salt);
 
         Ingredient chili = new Ingredient(0, "świeże chili", 0, 0, 0, 0, 0, "g");
         dataService.AddAIngredient(chili);
@@ -58,7 +60,8 @@ public class FakeDataHelper {
                         new IngredientRecipe(woda.id, 0, 50),
                         new IngredientRecipe(maka.id, 0, 200),
                         new IngredientRecipe(cukier.id, 0, 100),
-                        new IngredientRecipe(pepper.id, 0, 2)
+                        new IngredientRecipe(pepper.id, 0, 2),
+                        new IngredientRecipe(salt.id, 0, 5)
                 ));
 
         dataService.AddRecipe(
@@ -100,7 +103,8 @@ public class FakeDataHelper {
                         new IngredientRecipe(woda.id, 0, 50),
                         new IngredientRecipe(maka.id, 0, 200),
                         new IngredientRecipe(cukier.id, 0, 100),
-                        new IngredientRecipe(pepper.id, 0, 2)
+                        new IngredientRecipe(pepper.id, 0, 2),
+                        new IngredientRecipe(salt.id, 0, 5)
                 ));
 
         dataService.AddRecipe(new Recipe(1, "torcik", "ciasto", "", 180, activity.getResources().getDrawable(R.drawable.tort_piernikowy_mini)),

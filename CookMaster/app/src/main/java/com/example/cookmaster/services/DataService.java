@@ -97,7 +97,10 @@ public class DataService {
         List<ShoppingEntry> result = new ArrayList<ShoppingEntry>();
 
         String sql = "SELECT i.NAME, i.UNITS, ui.IS_BOUGHT, SUM(ir.quantity), i.INGREDIENT_ID " +
-                "FROM USER_INGREDIENT ui JOIN INGREDIENT i ON(ui.INGREDIENT_ID = i.INGREDIENT_ID) JOIN INGREDIENT_RECIPE ir ON(ui.INGREDIENT_ID = ir.INGREDIENT_ID)" +
+                "FROM USER_RECIPE ur " +
+                   "JOIN INGREDIENT_RECIPE ir ON(ur.RECIPE_ID = ir.RECIPE_ID) " +
+                   "JOIN USER_INGREDIENT ui ON(ui.INGREDIENT_ID = ir.INGREDIENT_ID AND ui.USER_RECIPE_ID = ur.USER_RECIPE_ID) " +
+                   "JOIN INGREDIENT i ON(ui.INGREDIENT_ID = i.INGREDIENT_ID) " +
                 "WHERE ui.user_id = ? " +
                 "GROUP BY i.NAME, i.INGREDIENT_ID, i.UNITS, ui.IS_BOUGHT;";
         Cursor cursor = Db.rawQuery(sql, new String[]{userId + ""});
