@@ -32,8 +32,11 @@ public class FakeDataHelper {
         Ingredient salt = new Ingredient(0, "sól", 0, 0, 0, 0, 0, "g");
         dataService.AddAIngredient(salt);
 
-        Ingredient chili = new Ingredient(0, "świeże chili", 0, 0, 0, 0, 0, "g");
+        Ingredient chili = new Ingredient(0, "świeże chili", 0.065, 0.005, 0.015, 0.3, 0, "g");
         dataService.AddAIngredient(chili);
+
+        Ingredient lettuce = new Ingredient(0, "sałata", 0.029, 0.002, 0.014, 0.16, 0, "g");
+        dataService.AddAIngredient(lettuce);
 
         dataService.AddRecipe(
                 new Recipe(1, "Taka tam beza", "ciasto", "", 30, activity.getResources().getDrawable(R.drawable.beza_mini)),
@@ -74,8 +77,8 @@ public class FakeDataHelper {
                 ),
                 Arrays.asList(
                         new IngredientRecipe(chili.id, 0, 50),
-                        new IngredientRecipe(kurczak.id, 0, 200),
-                        new IngredientRecipe(cukier.id, 0, 100),
+                        new IngredientRecipe(kurczak.id, 0, 100),
+                        new IngredientRecipe(lettuce.id, 0, 200),
                         new IngredientRecipe(pepper.id, 0, 2)
                 ));
 

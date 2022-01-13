@@ -28,9 +28,9 @@ public class NutrientListAdapter extends ArrayAdapter<Nutrient> {
         if (convertView == null) {
             convertView = context.getLayoutInflater().inflate(resource, null, true);
         }
-        Nutrient ing = items.get(position);
-        ((TextView) convertView.findViewById(R.id.entry_name)).setText(ing.name);
-        ((TextView) convertView.findViewById(R.id.entry_quantity)).setText("" + ing.value);
+        Nutrient nutrient = items.get(position);
+        ((TextView) convertView.findViewById(R.id.entry_name)).setText(nutrient.name);
+        ((TextView) convertView.findViewById(R.id.entry_quantity)).setText("" + nutrient.value);
         return  convertView;
     }
 }
