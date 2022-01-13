@@ -7,6 +7,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.cookmaster.adapters.IngredientAdapter;
+import com.example.cookmaster.adapters.NutrientListAdapter;
+import com.example.cookmaster.domain.Nutrient;
 import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Procedure;
@@ -23,6 +25,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,10 +55,20 @@ public class RecipeActivity extends Activity {
             ExpandableListView recipeList = ((ExpandableListView)findViewById(R.id.recipe_steps));
             recipeList.setAdapter(stepAdapter);
 
-            List<RecipeIngredient> ingredients = dataService.GetIngredients(recipeId);//.stream().map(x -> x.name).collect(Collectors.toList());
+            List<RecipeIngredient> ingredients = dataService.GetIngredients(recipeId);
             IngredientAdapter ingredientAdapter = new IngredientAdapter(this, R.layout.ingredient, ingredients);
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
             ingredientsList.setAdapter(ingredientAdapter);
+
+            List<Nutrient> nutrients = Arrays.asList(
+                    new Nutrient("kalorie", (int)ingredients.stream().mapToDouble( (r) -> r.kcal * r.quantity).sum()),
+                    new Nutrient("białko", (int)ingredients.stream().mapToDouble( (r) -> r.proteins * r.quantity).sum()),
+                    new Nutrient("tłuszcz", (int)ingredients.stream().mapToDouble( (r) -> r.fats * r.quantity).sum()),
+                    new Nutrient("węklowodany", (int)ingredients.stream().mapToDouble( (r) -> r.carbohydrates * r.quantity).sum())
+            );
+            NutrientListAdapter nutrientAdapter = new NutrientListAdapter(this, R.layout.ingredient, nutrients);
+            ListView nutrientList = ((ListView)findViewById(R.id.nutrients));
+            nutrientList.setAdapter(nutrientAdapter);
 
             List<Recipe> usersRecipes = dataService.GetRecipes(0);
             isRecipeAdded = usersRecipes.stream().anyMatch(x -> x.id == recipeId);

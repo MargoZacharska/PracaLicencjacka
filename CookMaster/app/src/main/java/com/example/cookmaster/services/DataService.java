@@ -228,11 +228,11 @@ public class DataService {
         return new RecipeIngredient(
                 cursor.getInt(9),
                 cursor.getString(1),
-                cursor.getInt(2),
-                cursor.getInt(3),
-                cursor.getInt(4),
-                cursor.getInt(5),
-                cursor.getInt(6),
+                cursor.getDouble(2),
+                cursor.getDouble(3),
+                cursor.getDouble(4),
+                cursor.getDouble(5),
+                cursor.getDouble(6),
                 cursor.getString(7));
     }
 

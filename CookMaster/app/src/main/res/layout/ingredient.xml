@@ -10,7 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:id="@+id/ingredient_name"/>
+        android:id="@+id/entry_name"/>
 
     <TextView
         android:height="50px"
@@ -18,5 +18,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:id="@+id/quantity"/>
+        android:id="@+id/entry_quantity"/>
 </RelativeLayout>

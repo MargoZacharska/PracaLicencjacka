@@ -31,8 +31,8 @@ private Activity context;
             convertView = context.getLayoutInflater().inflate(resource, null, true);
         }
         RecipeIngredient ing = items.get(position);
-        ((TextView) convertView.findViewById(R.id.ingredient_name)).setText(ing.name);
-        ((TextView) convertView.findViewById(R.id.quantity)).setText("" + ing.quantity + " " + ing.units);
+        ((TextView) convertView.findViewById(R.id.entry_name)).setText(ing.name);
+        ((TextView) convertView.findViewById(R.id.entry_quantity)).setText("" + ing.quantity + " " + ing.units);
         return  convertView;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.cookmaster.domain;
 
 public class RecipeIngredient {
-    public RecipeIngredient(int quantity, String name, int carbohydrates, int fats, int proteins, int kcal, int cost, String units){
+    public RecipeIngredient(int quantity, String name, double carbohydrates, double fats, double proteins, double kcal, double cost, String units){
         this.quantity = quantity;
         this.name = name;
         this.carbohydrates = carbohydrates;
@@ -14,10 +14,10 @@ public class RecipeIngredient {
 
     public int quantity;
     public String name;
-    public int carbohydrates;
-    public int fats;
-    public int proteins;
-    public int kcal;
-    public int cost;
+    public double carbohydrates;
+    public double fats;
+    public double proteins;
+    public double kcal;
+    public double cost;
     public String units;
 }
