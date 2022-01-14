@@ -19,6 +19,7 @@ public class FakeDataHelper {
         long cheapTag = dataService.AddTag("tani");
         long xdTag = dataService.AddTag("z podwórka somsiada");
         long cakeTag = dataService.AddTag("ciasto");
+        long healthyTag = dataService.AddTag("zdrowe");
 
         Ingredient woda = new Ingredient(0, "woda", 0, 0, 0, 0, 0, "ml");
         dataService.AddAIngredient(woda);
@@ -42,6 +43,12 @@ public class FakeDataHelper {
         dataService.AddAIngredient(chili);
 
         Ingredient lettuce = new Ingredient(0, "sałata", 0.029, 0.002, 0.014, 0.16, 0.01, "g");
+        dataService.AddAIngredient(lettuce);
+
+        Ingredient apples = new Ingredient(0, "jabłka", 0.14, 0.002, 0.003, 0.52, 0.08, "g");
+        dataService.AddAIngredient(lettuce);
+
+        Ingredient chocolate = new Ingredient(0, "czekolada gorzka", 0.611, 0.323, 0.049, 5.46, 0.04, "g");
         dataService.AddAIngredient(lettuce);
 
         dataService.AddRecipe(
@@ -96,7 +103,8 @@ public class FakeDataHelper {
                         new IngredientRecipe(pepper.id, 0, 2)
                 ),
                 Arrays.asList(
-                        xdTag
+                        xdTag,
+                        healthyTag
                 ));
 
         dataService.AddRecipe(
@@ -109,7 +117,8 @@ public class FakeDataHelper {
                 Arrays.asList(
                         new IngredientRecipe(woda.id, 0, 50),
                         new IngredientRecipe(maka.id, 0, 200),
-                        new IngredientRecipe(cukier.id, 0, 100)
+                        new IngredientRecipe(cukier.id, 0, 100),
+                        new IngredientRecipe(apples.id, 0, 250)
                 ),
                 Arrays.asList(
                         cakeTag
@@ -127,10 +136,12 @@ public class FakeDataHelper {
                         new IngredientRecipe(maka.id, 0, 200),
                         new IngredientRecipe(cukier.id, 0, 100),
                         new IngredientRecipe(pepper.id, 0, 2),
-                        new IngredientRecipe(salt.id, 0, 5)
+                        new IngredientRecipe(salt.id, 0, 5),
+                        new IngredientRecipe(apples.id, 0, 100)
                 ),
                 Arrays.asList(
-                        soupTag
+                        soupTag,
+                        healthyTag
                 ));
 
         dataService.AddRecipe(new Recipe(1, "torcik", "ciasto", "", 180, activity.getResources().getDrawable(R.drawable.tort_piernikowy_mini)),
@@ -143,7 +154,8 @@ public class FakeDataHelper {
                 Arrays.asList(
                         new IngredientRecipe(woda.id, 0, 50),
                         new IngredientRecipe(maka.id, 0, 200),
-                        new IngredientRecipe(cukier.id, 0, 100)
+                        new IngredientRecipe(cukier.id, 0, 100),
+                        new IngredientRecipe(chocolate.id, 0, 100)
                 ),
                 Arrays.asList(
                         cakeTag
