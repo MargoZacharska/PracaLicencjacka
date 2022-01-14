@@ -40,6 +40,14 @@
                     android:text="Dodaj do listy zakupów" />
 
                 <TextView
+                    android:id="@+id/recipe_cost"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Moj wspaniały przepis "
+                    android:layout_marginTop="15px"
+                    android:textSize="28dp" />
+
+                <TextView
                     android:id="@+id/single_recipe_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

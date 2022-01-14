@@ -17,25 +17,25 @@ public class FakeDataHelper {
         Ingredient woda = new Ingredient(0, "woda", 0, 0, 0, 0, 0, "ml");
         dataService.AddAIngredient(woda);
 
-        Ingredient cukier = new Ingredient(0, "cukier", 1, 0, 0, 3.91, 0, "g");
+        Ingredient cukier = new Ingredient(0, "cukier", 1, 0, 0, 3.91, 0.004, "g");
         dataService.AddAIngredient(cukier);
 
-        Ingredient maka = new Ingredient(0, "mąka", 0.686, 0.016, 0.11, 3.41, 0, "g");
+        Ingredient maka = new Ingredient(0, "mąka", 0.686, 0.016, 0.11, 3.41, 0.004, "g");
         dataService.AddAIngredient(maka);
 
-        Ingredient kurczak = new Ingredient(0, "pierś kurczaka", 0, 0.102, 0.168, 1.52, 0, "g");
+        Ingredient kurczak = new Ingredient(0, "pierś kurczaka", 0, 0.102, 0.168, 1.52, 0.02, "g");
         dataService.AddAIngredient(kurczak);
 
         Ingredient pepper = new Ingredient(0, "pieprz", 0, 0, 0, 0, 0, "szczypy");
         dataService.AddAIngredient(pepper);
 
-        Ingredient salt = new Ingredient(0, "sól", 0, 0, 0, 0, 0, "g");
+        Ingredient salt = new Ingredient(0, "sól", 0, 0, 0, 0, 0.004, "g");
         dataService.AddAIngredient(salt);
 
-        Ingredient chili = new Ingredient(0, "świeże chili", 0.065, 0.005, 0.015, 0.3, 0, "g");
+        Ingredient chili = new Ingredient(0, "świeże chili", 0.065, 0.005, 0.015, 0.3, 0.02, "g");
         dataService.AddAIngredient(chili);
 
-        Ingredient lettuce = new Ingredient(0, "sałata", 0.029, 0.002, 0.014, 0.16, 0, "g");
+        Ingredient lettuce = new Ingredient(0, "sałata", 0.029, 0.002, 0.014, 0.16, 0.01, "g");
         dataService.AddAIngredient(lettuce);
 
         dataService.AddRecipe(

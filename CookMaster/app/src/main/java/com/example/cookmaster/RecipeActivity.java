@@ -23,6 +23,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
@@ -59,6 +60,10 @@ public class RecipeActivity extends Activity {
             IngredientAdapter ingredientAdapter = new IngredientAdapter(this, R.layout.ingredient, ingredients);
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
             ingredientsList.setAdapter(ingredientAdapter);
+
+            int cost = (int)ingredients.stream().mapToDouble( (r) -> r.cost * r.quantity).sum();
+            TextView recipeCostTextView = (TextView)findViewById(R.id.recipe_cost);
+            recipeCostTextView.setText("Koszt: " + cost + " zł");
 
             List<Nutrient> nutrients = Arrays.asList(
                     new Nutrient("kalorie", (int)ingredients.stream().mapToDouble( (r) -> r.kcal * r.quantity).sum()),
