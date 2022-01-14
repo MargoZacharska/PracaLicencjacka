@@ -91,8 +91,11 @@ public class LocalDbConnector extends SQLiteOpenHelper {
             + "TAG TEXT);\n ";
 
     private final String RecipeTagTable = "create table RECIPE_TAG ("
-            + "TAG_ID INTEGER NOT NULL primary key autoincrement,"
-            + "RECIPE_ID INTEGER NOT NULL);\n ";
+            + "RECIPE_TAG_ID INTEGER NOT NULL primary key autoincrement,"
+            + "TAG_ID INTEGER NOT NULL, "
+            + "RECIPE_ID INTEGER NOT NULL, "
+            + "FOREIGN KEY (RECIPE_ID) REFERENCES RECIPE(RECIPE_ID) ON DELETE CASCADE, "
+            + "FOREIGN KEY (TAG_ID) REFERENCES TAG(TAG_ID) ON DELETE CASCADE);\n ";
 
     public LocalDbConnector(Context context) {
         // superclass constructor
@@ -112,8 +115,8 @@ public class LocalDbConnector extends SQLiteOpenHelper {
         db.execSQL(UserIngredientTable);
         //db.execSQL(RatingTable);
         db.execSQL(AnnotationRecipeTable);
-        //db.execSQL(TagTable);
-        //db.execSQL(RecipeTagTable);
+        db.execSQL(TagTable);
+        db.execSQL(RecipeTagTable);
     }
 
     @Override

@@ -13,10 +13,12 @@ import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
+import com.example.cookmaster.model.Tag;
 import com.example.cookmaster.services.DataService;
 import com.example.cookmaster.adapters.RecipeStepsAdapter;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -61,6 +63,14 @@ public class RecipeActivity extends Activity {
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
             ingredientsList.setAdapter(ingredientAdapter);
 
+            List<Tag> tags = dataService.GetTags(recipeId);
+            FlowLayout tagList = findViewById(R.id.tags);
+            for (Tag t: tags) {
+                TextView textView = new TextView(new ContextThemeWrapper(this, R.style.CustomView), null, 0);
+                textView.setText(t.tag);
+                tagList.addView(textView);
+
+            }
             int cost = (int)ingredients.stream().mapToDouble( (r) -> r.cost * r.quantity).sum();
             TextView recipeCostTextView = (TextView)findViewById(R.id.recipe_cost);
             recipeCostTextView.setText("Koszt: " + cost + " zł");

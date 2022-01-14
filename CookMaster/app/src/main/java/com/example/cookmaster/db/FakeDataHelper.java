@@ -9,10 +9,16 @@ import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class FakeDataHelper {
     public static void addTestData(DataService dataService, Activity activity) {
+
+        long soupTag = dataService.AddTag("zupa");
+        long cheapTag = dataService.AddTag("tani");
+        long xdTag = dataService.AddTag("z podwórka somsiada");
+        long cakeTag = dataService.AddTag("ciasto");
 
         Ingredient woda = new Ingredient(0, "woda", 0, 0, 0, 0, 0, "ml");
         dataService.AddAIngredient(woda);
@@ -49,6 +55,10 @@ public class FakeDataHelper {
                         new IngredientRecipe(woda.id, 0, 50),
                         new IngredientRecipe(maka.id, 0, 200),
                         new IngredientRecipe(cukier.id, 0, 100)
+                ),
+                Arrays.asList(
+                    cakeTag,
+                    cheapTag
                 ));
 
         dataService.AddRecipe(
@@ -65,6 +75,10 @@ public class FakeDataHelper {
                         new IngredientRecipe(cukier.id, 0, 100),
                         new IngredientRecipe(pepper.id, 0, 2),
                         new IngredientRecipe(salt.id, 0, 5)
+                ),
+                Arrays.asList(
+                        cheapTag,
+                        xdTag
                 ));
 
         dataService.AddRecipe(
@@ -80,6 +94,9 @@ public class FakeDataHelper {
                         new IngredientRecipe(kurczak.id, 0, 100),
                         new IngredientRecipe(lettuce.id, 0, 200),
                         new IngredientRecipe(pepper.id, 0, 2)
+                ),
+                Arrays.asList(
+                        xdTag
                 ));
 
         dataService.AddRecipe(
@@ -93,6 +110,9 @@ public class FakeDataHelper {
                         new IngredientRecipe(woda.id, 0, 50),
                         new IngredientRecipe(maka.id, 0, 200),
                         new IngredientRecipe(cukier.id, 0, 100)
+                ),
+                Arrays.asList(
+                        cakeTag
                 ));
 
         dataService.AddRecipe(new Recipe(1, "Jesienna zupa", "zupa", "", 40, activity.getResources().getDrawable(R.drawable.zupa_dyniowa_mini)),
@@ -108,6 +128,9 @@ public class FakeDataHelper {
                         new IngredientRecipe(cukier.id, 0, 100),
                         new IngredientRecipe(pepper.id, 0, 2),
                         new IngredientRecipe(salt.id, 0, 5)
+                ),
+                Arrays.asList(
+                        soupTag
                 ));
 
         dataService.AddRecipe(new Recipe(1, "torcik", "ciasto", "", 180, activity.getResources().getDrawable(R.drawable.tort_piernikowy_mini)),
@@ -121,6 +144,9 @@ public class FakeDataHelper {
                         new IngredientRecipe(woda.id, 0, 50),
                         new IngredientRecipe(maka.id, 0, 200),
                         new IngredientRecipe(cukier.id, 0, 100)
+                ),
+                Arrays.asList(
+                        cakeTag
                 ));
     }
 }

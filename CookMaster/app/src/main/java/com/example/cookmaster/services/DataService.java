@@ -19,6 +19,7 @@ import com.example.cookmaster.model.Ingredient;
 import com.example.cookmaster.model.IngredientRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
+import com.example.cookmaster.model.Tag;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -35,7 +36,30 @@ public class DataService {
         Db = test.getWritableDatabase();
     }
 
-    public void AddRecipe(Recipe recipe, List<Procedure> steps, List<IngredientRecipe> ingredients) {
+    public long AddTag(String text) {
+        ContentValues values = new ContentValues();
+        values.put("TAG", text);
+        return Db.insert("TAG", null, values);
+    }
+
+    public List<Tag> GetTags(long recipeId){
+        List<Tag> result = new ArrayList<Tag>();
+
+        String sql = "SELECT t.tag_id, t.tag " +
+                "FROM TAG t " +
+                "JOIN RECIPE_TAG rt ON(t.TAG_ID = rt.TAG_ID) " +
+                "WHERE rt.recipe_ID = ? ;";
+        Cursor cursor = Db.rawQuery(sql, new String[]{recipeId + ""});
+
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(ReadTag(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    public void AddRecipe(Recipe recipe, List<Procedure> steps, List<IngredientRecipe> ingredients, List<Long> tags) {
         Bitmap bitmap = ((BitmapDrawable)recipe.image).getBitmap();
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
@@ -65,6 +89,13 @@ public class DataService {
             stepValues.put("RECIPE_ID", recipeId);
             stepValues.put("QUANTITY", ing.quantity);
             Db.insert("INGREDIENT_RECIPE", null, stepValues);
+        }
+
+        for (Long tagId : tags) {
+            ContentValues stepValues = new ContentValues();
+            stepValues.put("RECIPE_ID", recipeId);
+            stepValues.put("TAG_ID", tagId);
+            Db.insert("RECIPE_TAG", null, stepValues);
         }
     }
 
@@ -274,5 +305,11 @@ public class DataService {
                 cursor.getInt(3),
                 cursor.getString(1),
                 cursor.getLong(4));
+    }
+
+    private Tag ReadTag(Cursor cursor) {
+        return new Tag(
+                cursor.getInt(0),
+                cursor.getString(1));
     }
 }
