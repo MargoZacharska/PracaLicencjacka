@@ -53,9 +53,7 @@ public class RecipeActivity extends Activity {
             ImageView image = (ImageView)findViewById(R.id.single_recipe_image);
             image.setImageDrawable(recipe.image);
 
-            List<Procedure> steps = dataService.GetRecipeSteps(recipeId);
-            List<AnnotationRecipe> annotations = dataService.GetAnnotations(recipeId);
-            RecipeStepsAdapter stepAdapter = new RecipeStepsAdapter(this, steps, annotations, dataService);
+            RecipeStepsAdapter stepAdapter = new RecipeStepsAdapter(this, recipe.steps, dataService);
             ExpandableListView recipeList = ((ExpandableListView)findViewById(R.id.recipe_steps));
             recipeList.setAdapter(stepAdapter);
 

@@ -2,6 +2,7 @@ package com.example.cookmaster.domain;
 
 import android.graphics.drawable.Drawable;
 
+import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Tag;
 
 import java.util.List;
@@ -21,7 +22,8 @@ public class FullRecipe {
             int proteins,
             int kcal,
             int cost,
-            List<Tag> tags) {
+            List<Tag> tags,
+            List<Step> steps) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -35,6 +37,7 @@ public class FullRecipe {
         this.kcal = kcal;
         this.cost = cost;
         this.tags = tags;
+        this.steps = steps;
     }
 
     public int id;
@@ -45,6 +48,7 @@ public class FullRecipe {
     public Drawable image;
     public List<SingleIngredient> ingredients;
     public List<Tag> tags;
+    public List<Step> steps;
     public int carbohydrates;
     public int fats;
     public int proteins;

@@ -13,7 +13,7 @@ import java.lang.reflect.Array;
 import java.util.Arrays;
 
 public class FakeDataHelper {
-    public static void addTestData(DataService dataService, Activity activity) {
+    public static void addTestData(Repository dataService, Activity activity) {
 
         long soupTag = dataService.AddTag("zupa");
         long cheapTag = dataService.AddTag("tani");

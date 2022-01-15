@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import com.example.cookmaster.adapters.ChoppingListAdapter;
+import com.example.cookmaster.db.Repository;
 import com.example.cookmaster.domain.ShoppingEntry;
 import com.example.cookmaster.services.DataService;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

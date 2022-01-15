@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.cookmaster.R;
+import com.example.cookmaster.domain.Step;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Procedure;
 import com.example.cookmaster.model.Recipe;
@@ -26,16 +27,14 @@ import java.util.stream.Collectors;
 public class RecipeStepsAdapter extends BaseExpandableListAdapter {
 
     private Activity parent;
-    private List<Procedure> steps;
-    private List<AnnotationRecipe> notes;
+    private List<Step> steps;
     private DataService dataService;
 
-    public RecipeStepsAdapter(Activity parent, List<Procedure> steps, List<AnnotationRecipe> notes, DataService dataService)
+    public RecipeStepsAdapter(Activity parent, List<Step> steps, DataService dataService)
     {
         this.parent = parent;
         this.steps = steps;
         this.dataService = dataService;
-        this.notes = notes;
     }
 
     @Override
@@ -44,7 +43,7 @@ public class RecipeStepsAdapter extends BaseExpandableListAdapter {
             convertView = parent.getLayoutInflater().inflate(R.layout.step, container, false);
         }
         final Context view = convertView.getContext();
-        final Procedure step = steps.get(position);
+        final Step step = steps.get(position);
         List<AnnotationRecipe> annotations = GetAnnotations(position);
 
         Button button = (Button)convertView.findViewById(R.id.addNoteButton);
@@ -61,7 +60,7 @@ public class RecipeStepsAdapter extends BaseExpandableListAdapter {
                 public void onClick(DialogInterface dialog, int which) {
                     AnnotationRecipe newAnnotation = new AnnotationRecipe(0, 1, step.id, input.getText().toString());
                     dataService.AddAnnotation(newAnnotation);
-                    notes.add(newAnnotation);
+                    step.annotations.add(newAnnotation);
                     notifyDataSetChanged();
                 }
             });
@@ -128,7 +127,7 @@ public class RecipeStepsAdapter extends BaseExpandableListAdapter {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dataService.RemoveAnnotation(annotation.id);
-                    notes.remove(annotation);
+                    steps.get(i).annotations.remove(annotation);
                     notifyDataSetChanged();
                 }
             });
@@ -158,7 +157,6 @@ public class RecipeStepsAdapter extends BaseExpandableListAdapter {
     }
 
     private List<AnnotationRecipe> GetAnnotations(int i){
-        final Procedure step = steps.get(i);
-        return notes.stream().filter(x -> x.procedure_id == step.id).collect(Collectors.toList());
+        return steps.get(i).annotations;
     }
 }

@@ -12,11 +12,13 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 
 import com.example.cookmaster.db.LocalDbConnector;
+import com.example.cookmaster.db.Repository;
 import com.example.cookmaster.domain.FullRecipe;
 import com.example.cookmaster.domain.Nutrient;
 import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.domain.ShoppingEntry;
 import com.example.cookmaster.domain.SingleIngredient;
+import com.example.cookmaster.domain.Step;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Ingredient;
 import com.example.cookmaster.model.IngredientRecipe;
@@ -26,38 +28,49 @@ import com.example.cookmaster.model.Tag;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class DataService {
 
-    private SQLiteDatabase Db;
+    private Repository Db;
 
     public DataService(Context context){
-        LocalDbConnector test = new LocalDbConnector(context);
-        Db = test.getWritableDatabase();
+        Db = new Repository(context);
     }
 
     public List<FullRecipe> GetAllRecipes() {
-        List<Recipe> recipes = this.GetRecipes();
-        List<RecipeIngredient> ingredients = this.GetAllIngredients();
-        List<Tag> tags = this.GetAllTags();
+        List<Recipe> recipes = Db.GetRecipes();
+        List<RecipeIngredient> ingredients = Db.GetAllIngredients();
+        List<Tag> tags = Db.GetAllTags();
+        List<Procedure> steps = Db.GetAllRecipeSteps();
+        List<AnnotationRecipe> annotations = Db.GetAllAnnotations();
 
-        return recipes.stream().map(x -> buildFullRecipe(x, ingredients, tags)).collect(Collectors.toList());
+        return recipes.stream()
+                .map(x -> buildFullRecipe(x, ingredients, tags, steps, annotations))
+                .collect(Collectors.toList());
     }
 
     public FullRecipe GetFullRecipes(int recipeId) {
-        Recipe recipe = this.GetRecipe(recipeId);
-        List<RecipeIngredient> ingredients = this.GetIngredients(recipeId);
-        List<Tag> tags = this.GetTags(recipeId);
-
-        return buildFullRecipe(recipe, ingredients, tags);
+        Recipe recipe = Db.GetRecipe(recipeId);
+        List<RecipeIngredient> ingredients = Db.GetIngredients(recipeId);
+        List<Tag> tags = Db.GetTags(recipeId);
+        List<Procedure> steps = Db.GetRecipeSteps(recipeId);
+        List<AnnotationRecipe> annotations = Db.GetAnnotations(recipeId);
+        return buildFullRecipe(recipe, ingredients, tags, steps, annotations);
     }
 
-    private FullRecipe buildFullRecipe(Recipe x, List<RecipeIngredient> allIngredients, List<Tag> allTags) {
+    private FullRecipe buildFullRecipe(Recipe x, List<RecipeIngredient> allIngredients, List<Tag> allTags, List<Procedure> allSteps, List<AnnotationRecipe> allAnnotations) {
         List<RecipeIngredient> ingredients = allIngredients.stream().filter(ing -> ing.recipeId == ing.recipeId).collect(Collectors.toList());
-        List<Tag> tags = allTags.stream().filter(t -> t.recipeId == t.recipeId).collect(Collectors.toList());
+        List<Tag> tags = allTags.stream().filter(t -> t.recipeId == x.id).collect(Collectors.toList());
+        List<Step> steps = allSteps.stream()
+                .filter(t -> t.recipe_id == x.id)
+                .sorted(Comparator.comparingInt(a -> a.order_number))
+                .map(s -> new Step(s.id, s.recipe_id, s.description, allAnnotations.stream().filter(a -> a.procedure_id == s.id).collect(Collectors.toList())))
+                .collect(Collectors.toList());
 
         return new FullRecipe(
                 x.id,
@@ -72,318 +85,35 @@ public class DataService {
                 (int)ingredients.stream().mapToDouble( (r) -> r.proteins * r.quantity).sum(),
                 (int)ingredients.stream().mapToDouble( (r) -> r.kcal * r.quantity).sum(),
                 (int)ingredients.stream().mapToDouble( (r) -> r.cost * r.quantity).sum(),
-                tags);
+                tags,
+                steps);
     }
 
-    public long AddTag(String text) {
-        ContentValues values = new ContentValues();
-        values.put("TAG", text);
-        return Db.insert("TAG", null, values);
+    public void RemoveRecipeFromUser(long recipeId, long userId){
+        Db.RemoveRecipeFromUser(recipeId, userId);
     }
 
-    public List<Tag> GetTags(long recipeId){
-        List<Tag> result = new ArrayList<Tag>();
-
-        String sql = "SELECT t.tag_id, t.tag, rt.recipe_ID " +
-                "FROM TAG t " +
-                "JOIN RECIPE_TAG rt ON(t.TAG_ID = rt.TAG_ID) " +
-                "WHERE rt.recipe_ID = ? ;";
-        Cursor cursor = Db.rawQuery(sql, new String[]{recipeId + ""});
-
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadTag(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    public List<Tag> GetAllTags(){
-        List<Tag> result = new ArrayList<Tag>();
-
-        String sql = "SELECT t.tag_id, t.tag, rt.recipe_ID " +
-                "FROM TAG t " +
-                "JOIN RECIPE_TAG rt ON(t.TAG_ID = rt.TAG_ID);";
-        Cursor cursor = Db.rawQuery(sql, new String[]{});
-
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadTag(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    public void AddRecipe(Recipe recipe, List<Procedure> steps, List<IngredientRecipe> ingredients, List<Long> tags) {
-        Bitmap bitmap = ((BitmapDrawable)recipe.image).getBitmap();
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        byte[] bitMapData = stream.toByteArray();
-
-        ContentValues values = new ContentValues();
-        values.put("NAME", recipe.name);
-        values.put("DESCRIPTION", recipe.description);
-        values.put("CATEGORY", recipe.category);
-        values.put("PREPARATION_TIME", recipe.preparationTime);
-        values.put("PHOTO", bitMapData);
-
-        long recipeId = Db.insert("recipe", null, values);
-
-        int order = 0;
-        for (Procedure p : steps) {
-            ContentValues stepValues = new ContentValues();
-            stepValues.put("RECIPE_ID", recipeId);
-            stepValues.put("DESCRIPTION", p.description);
-            stepValues.put("ORDER_NUMBER", order++);
-            Db.insert("procedure", null, stepValues);
-        }
-
-        for (IngredientRecipe ing : ingredients) {
-            ContentValues stepValues = new ContentValues();
-            stepValues.put("INGREDIENT_ID", ing.ingredient_id);
-            stepValues.put("RECIPE_ID", recipeId);
-            stepValues.put("QUANTITY", ing.quantity);
-            Db.insert("INGREDIENT_RECIPE", null, stepValues);
-        }
-
-        for (Long tagId : tags) {
-            ContentValues stepValues = new ContentValues();
-            stepValues.put("RECIPE_ID", recipeId);
-            stepValues.put("TAG_ID", tagId);
-            Db.insert("RECIPE_TAG", null, stepValues);
-        }
-    }
-
-    public void AddRecipeToUser(long recipeId, long userId) {
-        ContentValues values = new ContentValues();
-        values.put("RECIPE_ID", recipeId);
-        values.put("USER_ID", userId);
-
-        long id = Db.insert("USER_RECIPE", null, values);
-
-        Db.execSQL(
-                "INSERT INTO USER_INGREDIENT (USER_ID, INGREDIENT_ID, USER_RECIPE_ID, IS_BOUGHT) " +
-                    "SELECT ? AS 'USER_ID', i.INGREDIENT_ID, ? AS 'USER_RECIPE_ID', 0 AS 'IS_BOUGHT' " +
-                    "FROM INGREDIENT i JOIN INGREDIENT_RECIPE ir ON(i.INGREDIENT_ID = ir.INGREDIENT_ID) " +
-                    "WHERE ir.RECIPE_ID = ?",
-                new String[] {userId + "", id + "", recipeId + ""});
-    }
-
-    public void RemoveRecipeFromUser(long recipeId, long userId) {
-        Db.delete("USER_RECIPE", "USER_ID = ? AND RECIPE_ID = ?", new String[]{ userId + "", recipeId + "" });
-    }
-
-    public void MarkIngredientAsBought(long userId, long ingredientId) {
-        ContentValues values = new ContentValues();
-        values.put("IS_BOUGHT", true);
-        Db.update("USER_INGREDIENT", values, "user_id = ? AND INGREDIENT_ID = ?", new String[] {userId + "", ingredientId + ""});
-    }
-
-    public List<ShoppingEntry> GetShoppingList(long userId) {
-        List<ShoppingEntry> result = new ArrayList<ShoppingEntry>();
-
-        String sql = "SELECT i.NAME, i.UNITS, ui.IS_BOUGHT, SUM(ir.quantity), i.INGREDIENT_ID " +
-                "FROM USER_RECIPE ur " +
-                   "JOIN INGREDIENT_RECIPE ir ON(ur.RECIPE_ID = ir.RECIPE_ID) " +
-                   "JOIN USER_INGREDIENT ui ON(ui.INGREDIENT_ID = ir.INGREDIENT_ID AND ui.USER_RECIPE_ID = ur.USER_RECIPE_ID) " +
-                   "JOIN INGREDIENT i ON(ui.INGREDIENT_ID = i.INGREDIENT_ID) " +
-                "WHERE ui.user_id = ? " +
-                "GROUP BY i.NAME, i.INGREDIENT_ID, i.UNITS, ui.IS_BOUGHT;";
-        Cursor cursor = Db.rawQuery(sql, new String[]{userId + ""});
-
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadShoppingEntry(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    public void AddAIngredient(Ingredient ingredient) {
-        ContentValues values = new ContentValues();
-        values.put("NAME", ingredient.name);
-        values.put("CARBOHYDRATES", ingredient.carbohydrates);
-        values.put("FATS", ingredient.fats);
-        values.put("PROTEINS", ingredient.proteins);
-        values.put("KCAL", ingredient.kcal);
-        values.put("COST", ingredient.cost);
-        values.put("UNITS", ingredient.units);
-
-        long id = Db.insert("INGREDIENT", null, values);
-        ingredient.id = id;
-    }
-
-    public void AddAnnotation(AnnotationRecipe annotation) {
-        ContentValues values = new ContentValues();
-        values.put("PROCEDURE_ID", annotation.procedure_id);
-        values.put("USER_ID", annotation.user_id);
-        values.put("DESCRIPTION", annotation.description);
-
-        long id = Db.insert("ANNOTATION_RECIPE", null, values);
-        annotation.id = id;
-    }
-
-    public void RemoveAnnotation(long annotationId) {
-        long id = Db.delete("ANNOTATION_RECIPE", "ANNOTATION_ID=?", new String[] {"" + annotationId});
-    }
-
-    public List<Recipe> GetRecipes() {
-        List<Recipe> result = new ArrayList<Recipe>();
-
-        Cursor cursor = Db.rawQuery("SELECT * FROM recipe", new String[]{});
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadRecipe(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
+    public void AddRecipeToUser(long recipeId, long userId){
+        Db.AddRecipeToUser(recipeId, userId);
     }
 
     public List<Recipe> GetRecipes(long userId) {
-        List<Recipe> result = new ArrayList<Recipe>();
-
-        String sql = "SELECT r.* " +
-                "FROM user_recipe ur JOIN recipe r ON(ur.RECIPE_ID = r.RECIPE_ID) " +
-                "WHERE ur.user_id = ? ;";
-        Cursor cursor = Db.rawQuery(sql, new String[]{userId + ""});
-
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadRecipe(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
+        return Db.GetRecipes(userId);
     }
 
-    public Recipe GetRecipe(int id) {
-        Cursor cursor = Db.rawQuery("SELECT * FROM recipe WHERE recipe_id = ?", new String[]{id + ""});
-        if (cursor.moveToFirst()) {
-            return ReadRecipe(cursor);
-        }
-        return null;
+    public List<ShoppingEntry> GetShoppingList(long userId) {
+        return Db.GetShoppingList(userId);
     }
 
-    public List<Procedure> GetRecipeSteps(int recipeId){
-        List<Procedure> result = new ArrayList<Procedure>();
-
-        Cursor cursor = Db.rawQuery("SELECT * FROM procedure WHERE recipe_id = ?", new String[]{recipeId + ""});
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadProcedure(cursor));
-            } while (cursor.moveToNext());
-        }
-        result.sort((x, y) -> x.order_number - y.order_number);
-        return result;
+    public void AddAnnotation(AnnotationRecipe annotation) {
+        Db.AddAnnotation(annotation);
     }
 
-    public List<AnnotationRecipe> GetAnnotations(int recipeId) {
-        List<AnnotationRecipe> result = new ArrayList<AnnotationRecipe>();
-
-        Cursor cursor = Db.rawQuery(
-                "SELECT a.* " +
-                    "FROM recipe r JOIN procedure p ON(r.RECIPE_ID = p.RECIPE_ID) JOIN ANNOTATION_RECIPE a ON(a.PROCEDURE_ID = p.PROCEDURE_ID) " +
-                    "WHERE r.recipe_id = ?;",
-                new String[]{recipeId + ""});
-
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadAnnotation(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
+    public void RemoveAnnotation(long annotationId) {
+        Db.RemoveAnnotation(annotationId);
     }
 
-    public List<RecipeIngredient> GetIngredients(int recipeId) {
-        List<RecipeIngredient> result = new ArrayList<RecipeIngredient>();
-
-        Cursor cursor = Db.rawQuery(
-                "SELECT i.*, ir.QUANTITY, ir.RECIPE_ID " +
-                    "FROM recipe r JOIN INGREDIENT_RECIPE ir ON(r.RECIPE_ID = ir.RECIPE_ID) JOIN INGREDIENT i ON(ir.INGREDIENT_ID = i.INGREDIENT_ID) " +
-                    "WHERE r.recipe_id = ?;",
-                new String[]{recipeId + ""});
-
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadRecipeIngredient(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    public List<RecipeIngredient> GetAllIngredients(){
-        List<RecipeIngredient> result = new ArrayList<RecipeIngredient>();
-
-        Cursor cursor = Db.rawQuery(
-                "SELECT i.*, ir.QUANTITY, ir.RECIPE_ID " +
-                        "FROM recipe r JOIN INGREDIENT_RECIPE ir ON(r.RECIPE_ID = ir.RECIPE_ID) JOIN INGREDIENT i ON(ir.INGREDIENT_ID = i.INGREDIENT_ID) " +
-                        "WHERE r.recipe_id = ?;",
-                new String[]{});
-
-        if (cursor.moveToFirst()) {
-            do {
-                result.add(ReadRecipeIngredient(cursor));
-            } while (cursor.moveToNext());
-        }
-        return result;
-    }
-
-    private RecipeIngredient ReadRecipeIngredient(Cursor cursor) {
-        return new RecipeIngredient(
-                cursor.getInt(9),
-                cursor.getString(1),
-                cursor.getDouble(2),
-                cursor.getDouble(3),
-                cursor.getDouble(4),
-                cursor.getDouble(5),
-                cursor.getDouble(6),
-                cursor.getString(7),
-                cursor.getInt(9));
-    }
-
-    private AnnotationRecipe ReadAnnotation(Cursor cursor) {
-        return new AnnotationRecipe(
-                cursor.getInt(0),
-                cursor.getInt(1),
-                cursor.getInt(2),
-                cursor.getString(3));
-    }
-
-    private Procedure ReadProcedure(Cursor cursor) {
-        return new Procedure(
-                cursor.getInt(0),
-                cursor.getInt(1),
-                cursor.getString(2),
-                cursor.getInt(3));
-    }
-
-    private Recipe ReadRecipe(Cursor cursor) {
-        ByteArrayInputStream stream = new ByteArrayInputStream(cursor.getBlob(5));
-        Bitmap bits = BitmapFactory.decodeStream(stream);
-        bits = Bitmap.createScaledBitmap(bits, 1000, 1000, false);
-        Drawable d = new BitmapDrawable(bits);
-
-        return new Recipe(
-                cursor.getInt(0),
-                cursor.getString(1),
-                cursor.getString(2),
-                cursor.getString(3),
-                cursor.getInt(4),
-                d);
-    }
-
-    private ShoppingEntry ReadShoppingEntry(Cursor cursor) {
-        return new ShoppingEntry(
-                cursor.getShort(2) != 0,
-                cursor.getString(0),
-                cursor.getInt(3),
-                cursor.getString(1),
-                cursor.getLong(4));
-    }
-
-    private Tag ReadTag(Cursor cursor) {
-        return new Tag(
-                cursor.getInt(0),
-                cursor.getString(1),
-                cursor.getLong(2));
+    public void MarkIngredientAsBought(long userId, long ingredientId) {
+        Db.MarkIngredientAsBought(userId, ingredientId);
     }
 }
