@@ -8,12 +8,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.ScaleDrawable;
-import android.media.Rating;
+
+import androidx.annotation.NonNull;
 
 import com.example.cookmaster.db.LocalDbConnector;
+import com.example.cookmaster.domain.FullRecipe;
+import com.example.cookmaster.domain.Nutrient;
 import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.domain.ShoppingEntry;
+import com.example.cookmaster.domain.SingleIngredient;
 import com.example.cookmaster.model.AnnotationRecipe;
 import com.example.cookmaster.model.Ingredient;
 import com.example.cookmaster.model.IngredientRecipe;
@@ -24,8 +27,8 @@ import com.example.cookmaster.model.Tag;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class DataService {
 
@@ -34,6 +37,42 @@ public class DataService {
     public DataService(Context context){
         LocalDbConnector test = new LocalDbConnector(context);
         Db = test.getWritableDatabase();
+    }
+
+    public List<FullRecipe> GetAllRecipes() {
+        List<Recipe> recipes = this.GetRecipes();
+        List<RecipeIngredient> ingredients = this.GetAllIngredients();
+        List<Tag> tags = this.GetAllTags();
+
+        return recipes.stream().map(x -> buildFullRecipe(x, ingredients, tags)).collect(Collectors.toList());
+    }
+
+    public FullRecipe GetFullRecipes(int recipeId) {
+        Recipe recipe = this.GetRecipe(recipeId);
+        List<RecipeIngredient> ingredients = this.GetIngredients(recipeId);
+        List<Tag> tags = this.GetTags(recipeId);
+
+        return buildFullRecipe(recipe, ingredients, tags);
+    }
+
+    private FullRecipe buildFullRecipe(Recipe x, List<RecipeIngredient> allIngredients, List<Tag> allTags) {
+        List<RecipeIngredient> ingredients = allIngredients.stream().filter(ing -> ing.recipeId == ing.recipeId).collect(Collectors.toList());
+        List<Tag> tags = allTags.stream().filter(t -> t.recipeId == t.recipeId).collect(Collectors.toList());
+
+        return new FullRecipe(
+                x.id,
+                x.name,
+                x.description,
+                x.category,
+                x.preparationTime,
+                x.image,
+                ingredients.stream().map(ing -> new SingleIngredient(ing.name, ing.quantity, ing.units)).collect(Collectors.toList()),
+                (int)ingredients.stream().mapToDouble( (r) -> r.carbohydrates * r.quantity).sum(),
+                (int)ingredients.stream().mapToDouble( (r) -> r.fats * r.quantity).sum(),
+                (int)ingredients.stream().mapToDouble( (r) -> r.proteins * r.quantity).sum(),
+                (int)ingredients.stream().mapToDouble( (r) -> r.kcal * r.quantity).sum(),
+                (int)ingredients.stream().mapToDouble( (r) -> r.cost * r.quantity).sum(),
+                tags);
     }
 
     public long AddTag(String text) {
@@ -45,11 +84,27 @@ public class DataService {
     public List<Tag> GetTags(long recipeId){
         List<Tag> result = new ArrayList<Tag>();
 
-        String sql = "SELECT t.tag_id, t.tag " +
+        String sql = "SELECT t.tag_id, t.tag, rt.recipe_ID " +
                 "FROM TAG t " +
                 "JOIN RECIPE_TAG rt ON(t.TAG_ID = rt.TAG_ID) " +
                 "WHERE rt.recipe_ID = ? ;";
         Cursor cursor = Db.rawQuery(sql, new String[]{recipeId + ""});
+
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(ReadTag(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    public List<Tag> GetAllTags(){
+        List<Tag> result = new ArrayList<Tag>();
+
+        String sql = "SELECT t.tag_id, t.tag, rt.recipe_ID " +
+                "FROM TAG t " +
+                "JOIN RECIPE_TAG rt ON(t.TAG_ID = rt.TAG_ID);";
+        Cursor cursor = Db.rawQuery(sql, new String[]{});
 
         if (cursor.moveToFirst()) {
             do {
@@ -242,10 +297,27 @@ public class DataService {
         List<RecipeIngredient> result = new ArrayList<RecipeIngredient>();
 
         Cursor cursor = Db.rawQuery(
-                "SELECT i.*, ir.QUANTITY " +
+                "SELECT i.*, ir.QUANTITY, ir.RECIPE_ID " +
                     "FROM recipe r JOIN INGREDIENT_RECIPE ir ON(r.RECIPE_ID = ir.RECIPE_ID) JOIN INGREDIENT i ON(ir.INGREDIENT_ID = i.INGREDIENT_ID) " +
                     "WHERE r.recipe_id = ?;",
                 new String[]{recipeId + ""});
+
+        if (cursor.moveToFirst()) {
+            do {
+                result.add(ReadRecipeIngredient(cursor));
+            } while (cursor.moveToNext());
+        }
+        return result;
+    }
+
+    public List<RecipeIngredient> GetAllIngredients(){
+        List<RecipeIngredient> result = new ArrayList<RecipeIngredient>();
+
+        Cursor cursor = Db.rawQuery(
+                "SELECT i.*, ir.QUANTITY, ir.RECIPE_ID " +
+                        "FROM recipe r JOIN INGREDIENT_RECIPE ir ON(r.RECIPE_ID = ir.RECIPE_ID) JOIN INGREDIENT i ON(ir.INGREDIENT_ID = i.INGREDIENT_ID) " +
+                        "WHERE r.recipe_id = ?;",
+                new String[]{});
 
         if (cursor.moveToFirst()) {
             do {
@@ -264,7 +336,8 @@ public class DataService {
                 cursor.getDouble(4),
                 cursor.getDouble(5),
                 cursor.getDouble(6),
-                cursor.getString(7));
+                cursor.getString(7),
+                cursor.getInt(9));
     }
 
     private AnnotationRecipe ReadAnnotation(Cursor cursor) {
@@ -310,6 +383,7 @@ public class DataService {
     private Tag ReadTag(Cursor cursor) {
         return new Tag(
                 cursor.getInt(0),
-                cursor.getString(1));
+                cursor.getString(1),
+                cursor.getLong(2));
     }
 }

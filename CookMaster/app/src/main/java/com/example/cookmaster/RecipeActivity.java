@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.example.cookmaster.adapters.IngredientAdapter;
 import com.example.cookmaster.adapters.NutrientListAdapter;
+import com.example.cookmaster.domain.FullRecipe;
 import com.example.cookmaster.domain.Nutrient;
 import com.example.cookmaster.domain.RecipeIngredient;
 import com.example.cookmaster.model.AnnotationRecipe;
@@ -41,7 +42,7 @@ public class RecipeActivity extends Activity {
         setContentView(R.layout.activity_recipe);
         DataService dataService = new DataService(this);
         int recipeId = getIntent().getIntExtra("recipeId", 0);
-        Recipe recipe = dataService.GetRecipe(recipeId);
+        FullRecipe recipe = dataService.GetFullRecipes(recipeId);
 
         if(recipe == null){
             //TODO: implement
@@ -58,28 +59,25 @@ public class RecipeActivity extends Activity {
             ExpandableListView recipeList = ((ExpandableListView)findViewById(R.id.recipe_steps));
             recipeList.setAdapter(stepAdapter);
 
-            List<RecipeIngredient> ingredients = dataService.GetIngredients(recipeId);
-            IngredientAdapter ingredientAdapter = new IngredientAdapter(this, R.layout.ingredient, ingredients);
+            IngredientAdapter ingredientAdapter = new IngredientAdapter(this, R.layout.ingredient, recipe.ingredients);
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
             ingredientsList.setAdapter(ingredientAdapter);
 
-            List<Tag> tags = dataService.GetTags(recipeId);
             FlowLayout tagList = findViewById(R.id.tags);
-            for (Tag t: tags) {
+            for (Tag t: recipe.tags) {
                 TextView textView = new TextView(new ContextThemeWrapper(this, R.style.CustomView), null, 0);
                 textView.setText(t.tag);
                 tagList.addView(textView);
 
             }
-            int cost = (int)ingredients.stream().mapToDouble( (r) -> r.cost * r.quantity).sum();
             TextView recipeCostTextView = (TextView)findViewById(R.id.recipe_cost);
-            recipeCostTextView.setText("Koszt: " + cost + " zł");
+            recipeCostTextView.setText("Koszt: " + recipe.cost + " zł");
 
             List<Nutrient> nutrients = Arrays.asList(
-                    new Nutrient("kalorie", (int)ingredients.stream().mapToDouble( (r) -> r.kcal * r.quantity).sum()),
-                    new Nutrient("białko", (int)ingredients.stream().mapToDouble( (r) -> r.proteins * r.quantity).sum()),
-                    new Nutrient("tłuszcz", (int)ingredients.stream().mapToDouble( (r) -> r.fats * r.quantity).sum()),
-                    new Nutrient("węklowodany", (int)ingredients.stream().mapToDouble( (r) -> r.carbohydrates * r.quantity).sum())
+                    new Nutrient("kalorie", recipe.kcal),
+                    new Nutrient("białko", recipe.proteins),
+                    new Nutrient("tłuszcz", recipe.fats),
+                    new Nutrient("węklowodany", recipe.carbohydrates)
             );
             NutrientListAdapter nutrientAdapter = new NutrientListAdapter(this, R.layout.ingredient, nutrients);
             ListView nutrientList = ((ListView)findViewById(R.id.nutrients));

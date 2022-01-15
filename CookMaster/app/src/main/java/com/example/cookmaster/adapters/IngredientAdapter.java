@@ -10,15 +10,16 @@ import android.widget.TextView;
 
 import com.example.cookmaster.R;
 import com.example.cookmaster.domain.RecipeIngredient;
+import com.example.cookmaster.domain.SingleIngredient;
 
 import java.util.List;
 
-public class IngredientAdapter extends ArrayAdapter<RecipeIngredient> {
+public class IngredientAdapter extends ArrayAdapter<SingleIngredient> {
 private int resource;
-private List<RecipeIngredient> items;
+private List<SingleIngredient> items;
 private Activity context;
 
-    public IngredientAdapter(Activity context, int resource, List<RecipeIngredient> items) {
+    public IngredientAdapter(Activity context, int resource, List<SingleIngredient> items) {
             super(context, resource, items);
             this.resource = resource;
             this.items = items;
@@ -30,7 +31,7 @@ private Activity context;
         if (convertView == null) {
             convertView = context.getLayoutInflater().inflate(resource, null, true);
         }
-        RecipeIngredient ing = items.get(position);
+        SingleIngredient ing = items.get(position);
         ((TextView) convertView.findViewById(R.id.entry_name)).setText(ing.name);
         ((TextView) convertView.findViewById(R.id.entry_quantity)).setText("" + ing.quantity + " " + ing.units);
         return  convertView;

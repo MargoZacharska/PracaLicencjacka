@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.cookmaster.MainActivity;
 import com.example.cookmaster.R;
 import com.example.cookmaster.RecipeActivity;
+import com.example.cookmaster.domain.FullRecipe;
 import com.example.cookmaster.model.Recipe;
 
 import java.util.ArrayList;
@@ -23,11 +24,11 @@ import java.util.List;
 public class RecipeListAdapter extends BaseAdapter implements Filterable {
 
     private Activity parent;
-    private List<Recipe> allRecipes;
-    private List<Recipe> recipes;
+    private List<FullRecipe> allRecipes;
+    private List<FullRecipe> recipes;
     private List<Recipe> recipesAddedToShoppingList;
 
-    public RecipeListAdapter(Activity activity, List<Recipe> recipes, List<Recipe> recipesAddedToShoppingList) {
+    public RecipeListAdapter(Activity activity, List<FullRecipe> recipes, List<Recipe> recipesAddedToShoppingList) {
         this.parent = activity;
         this.recipes = recipes;
         this.allRecipes = recipes;
@@ -62,7 +63,7 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
         if (convertView == null) {
             convertView = parent.getLayoutInflater().inflate(R.layout.recipe_list_layout, container, false);
         }
-        Recipe recipe = this.recipes.get(position);
+        FullRecipe recipe = this.recipes.get(position);
 
         ((ImageView) convertView.findViewById(R.id.recipe_image)).setImageDrawable(recipe.image);
         ((TextView) convertView.findViewById(R.id.recipe_title)).setText(recipe.name);
@@ -99,10 +100,10 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
                     filterResults.values = allRecipes;
 
                 } else {
-                    List<Recipe> resultsModel = new ArrayList<>();
+                    List<FullRecipe> resultsModel = new ArrayList<>();
                     String searchStr = constraint.toString().toLowerCase();
 
-                    for (Recipe recipe : allRecipes) {
+                    for (FullRecipe recipe : allRecipes) {
                         if (recipe.name.contains(searchStr) || recipe.category.contains(searchStr)) {
                             resultsModel.add(recipe);
                         }
@@ -115,7 +116,7 @@ public class RecipeListAdapter extends BaseAdapter implements Filterable {
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                recipes = (List<Recipe>)results.values;
+                recipes = (List<FullRecipe>)results.values;
                 notifyDataSetChanged();
             }
         };

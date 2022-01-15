@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import com.example.cookmaster.db.FakeDataHelper;
+import com.example.cookmaster.domain.FullRecipe;
 import com.example.cookmaster.model.Recipe;
 import com.example.cookmaster.services.DataService;
 import com.example.cookmaster.adapters.RecipeListAdapter;
@@ -28,7 +29,7 @@ public class RecipeListActivity extends Activity {
 
         //FakeDataHelper.addTestData(dataService, this);
 
-        List<Recipe> recipes = dataService.GetRecipes();
+        List<FullRecipe> recipes = dataService.GetAllRecipes();
 
         adapter = new RecipeListAdapter(this, recipes, dataService.GetRecipes(0));
         ListView recipeList = ((ListView)findViewById(R.id.recipe_list_view));
