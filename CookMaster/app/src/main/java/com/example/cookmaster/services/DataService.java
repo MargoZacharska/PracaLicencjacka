@@ -42,28 +42,37 @@ public class DataService {
         Db = new Repository(context);
     }
 
-    public List<FullRecipe> GetAllRecipes() {
+    public List<FullRecipe> GetAllRecipes(long userId) {
         List<Recipe> recipes = Db.GetRecipes();
         List<RecipeIngredient> ingredients = Db.GetAllIngredients();
         List<Tag> tags = Db.GetAllTags();
         List<Procedure> steps = Db.GetAllRecipeSteps();
         List<AnnotationRecipe> annotations = Db.GetAllAnnotations();
+        List<Integer> userRecipes = Db.GetRecipes(userId).stream().map(x -> x.id).collect(Collectors.toList());
 
         return recipes.stream()
-                .map(x -> buildFullRecipe(x, ingredients, tags, steps, annotations))
+                .map(x -> buildFullRecipe(x, ingredients, tags, steps, annotations, userRecipes))
                 .collect(Collectors.toList());
     }
 
-    public FullRecipe GetFullRecipes(int recipeId) {
+    public FullRecipe GetFullRecipes(int recipeId, long userId) {
         Recipe recipe = Db.GetRecipe(recipeId);
         List<RecipeIngredient> ingredients = Db.GetIngredients(recipeId);
         List<Tag> tags = Db.GetTags(recipeId);
         List<Procedure> steps = Db.GetRecipeSteps(recipeId);
         List<AnnotationRecipe> annotations = Db.GetAnnotations(recipeId);
-        return buildFullRecipe(recipe, ingredients, tags, steps, annotations);
+        List<Integer> userRecipes = Db.GetRecipes(userId).stream().map(x -> x.id).collect(Collectors.toList());
+
+        return buildFullRecipe(recipe, ingredients, tags, steps, annotations, userRecipes);
     }
 
-    private FullRecipe buildFullRecipe(Recipe x, List<RecipeIngredient> allIngredients, List<Tag> allTags, List<Procedure> allSteps, List<AnnotationRecipe> allAnnotations) {
+    private FullRecipe buildFullRecipe(
+            Recipe x,
+            List<RecipeIngredient> allIngredients,
+            List<Tag> allTags,
+            List<Procedure> allSteps,
+            List<AnnotationRecipe> allAnnotations,
+            List<Integer> userRecipes) {
         List<RecipeIngredient> ingredients = allIngredients.stream().filter(ing -> ing.recipeId == ing.recipeId).collect(Collectors.toList());
         List<Tag> tags = allTags.stream().filter(t -> t.recipeId == x.id).collect(Collectors.toList());
         List<Step> steps = allSteps.stream()
@@ -86,7 +95,8 @@ public class DataService {
                 (int)ingredients.stream().mapToDouble( (r) -> r.kcal * r.quantity).sum(),
                 (int)ingredients.stream().mapToDouble( (r) -> r.cost * r.quantity).sum(),
                 tags,
-                steps);
+                steps,
+                userRecipes.contains(x.id));
     }
 
     public void RemoveRecipeFromUser(long recipeId, long userId){

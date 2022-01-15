@@ -29,7 +29,7 @@ public class RecipeListActivity extends Activity {
 
         //FakeDataHelper.addTestData(dataService, this);
 
-        List<FullRecipe> recipes = dataService.GetAllRecipes();
+        List<FullRecipe> recipes = dataService.GetAllRecipes(0);
 
         adapter = new RecipeListAdapter(this, recipes, dataService.GetRecipes(0));
         ListView recipeList = ((ListView)findViewById(R.id.recipe_list_view));

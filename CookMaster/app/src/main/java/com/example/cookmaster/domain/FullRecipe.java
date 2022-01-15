@@ -23,7 +23,8 @@ public class FullRecipe {
             int kcal,
             int cost,
             List<Tag> tags,
-            List<Step> steps) {
+            List<Step> steps,
+            boolean isAddedToShoppingList) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -38,8 +39,10 @@ public class FullRecipe {
         this.cost = cost;
         this.tags = tags;
         this.steps = steps;
+        this.isAddedToShoppingList = isAddedToShoppingList;
     }
 
+    public boolean isAddedToShoppingList;
     public int id;
     public String name;
     public String description;

@@ -29,15 +29,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class RecipeActivity extends Activity {
-
-    private boolean isRecipeAdded = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
         DataService dataService = new DataService(this);
         int recipeId = getIntent().getIntExtra("recipeId", 0);
-        FullRecipe recipe = dataService.GetFullRecipes(recipeId);
+        FullRecipe recipe = dataService.GetFullRecipes(recipeId, 0);
 
         if(recipe == null){
             //TODO: implement
@@ -56,10 +54,8 @@ public class RecipeActivity extends Activity {
             ListView ingredientsList = ((ListView)findViewById(R.id.ingredients));
             ingredientsList.setAdapter(ingredientAdapter);
 
-            List<Recipe> usersRecipes = dataService.GetRecipes(0);
-            isRecipeAdded = usersRecipes.stream().anyMatch(x -> x.id == recipeId);
 
-            setButton(dataService, recipeId);
+            setButton(dataService, recipeId, recipe);
             setTags(recipe);
             setNutrients(recipe);
         }
@@ -69,13 +65,13 @@ public class RecipeActivity extends Activity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new NavigationList(this));
     }
 
-    private void setButton(DataService dataService, int recipeId) {
+    private void setButton(DataService dataService, int recipeId, FullRecipe recipe ) {
         Button button = (Button)findViewById(R.id.add_to_shopping_list);
-        setButtonStyle(button);
+        setButtonStyle(button, recipe);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isRecipeAdded)
+                if(recipe.isAddedToShoppingList)
                 {
                     dataService.RemoveRecipeFromUser(recipeId, 0);
                 }
@@ -85,11 +81,11 @@ public class RecipeActivity extends Activity {
                 }
                 Toast.makeText(
                         RecipeActivity.this,
-                        isRecipeAdded? "Przepis usunięty z listy zakupów" : "Przepis dodany do listy zakupów",
+                        recipe.isAddedToShoppingList? "Przepis usunięty z listy zakupów" : "Przepis dodany do listy zakupów",
                         Toast.LENGTH_SHORT
                 ).show();
-                isRecipeAdded = !isRecipeAdded;
-                setButtonStyle(button);
+                recipe.isAddedToShoppingList = !recipe.isAddedToShoppingList;
+                setButtonStyle(button, recipe);
             }
         });
     }
@@ -118,9 +114,9 @@ public class RecipeActivity extends Activity {
         nutrientList.setAdapter(nutrientAdapter);
     }
 
-    private void setButtonStyle(Button button){
-        button.setText(isRecipeAdded? "Usuń z listy zakupów" : "Dodaj do listy zakupów");
-        button.setBackgroundColor(isRecipeAdded? Color.rgb(186, 57, 32) : Color.rgb(3, 165, 252));
+    private void setButtonStyle(Button button, FullRecipe recipe){
+        button.setText(recipe.isAddedToShoppingList? "Usuń z listy zakupów" : "Dodaj do listy zakupów");
+        button.setBackgroundColor(recipe.isAddedToShoppingList? Color.rgb(186, 57, 32) : Color.rgb(3, 165, 252));
     }
 
     @Override
